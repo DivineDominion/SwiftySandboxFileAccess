@@ -17,6 +17,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/leighmcculloch/AppSandboxFileAccess.git", :tag => "1.0.14" }
   s.source_files = "AppSandboxFileAccess/Classes/*.{swift}"
   s.requires_arc = true
-  s.swift_version = "4"
+  s.swift_version = "5"
 
 end
