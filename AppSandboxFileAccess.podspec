@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
-  s.name         = "AppSandboxFileAccess"
-  s.version      = "1.1.0"
+  s.name         = "SwiftyAppSandboxFileAccess"
+  s.version      = "2.0.0"
   s.summary      = "A class that wraps up writing and accessing files outside a Mac apps App Sandbox files into a simple interface."
 
   s.description  = <<-DESC
@@ -10,13 +10,12 @@ Pod::Spec.new do |s|
                    with Apple's documentation and persist permissions across application runs.
                    DESC
 
-  s.homepage     = "https://github.com/leighmcculloch/AppSandboxFileAccess"
+  s.homepage     = "https://github.com/ConfusedVorlon/SwiftyAppSandboxFileAccess"
   s.license      = { :type => "BSD-2", :file => "LICENSE" }
-  s.author       = { "Leigh McCulloch" => "leigh@mcchouse.com" }
+  s.author       = { "Leigh McCulloch" => "leigh@mcchouse.com","Rob Jonson" => "Rob@HobbyistSoftware.com" }
   s.platform     = :osx, "10.9"
-  s.source       = { :git => "https://github.com/leighmcculloch/AppSandboxFileAccess.git", :tag => "1.0.14" }
+  s.source       = { :git => "https://github.com/leighmcculloch/AppSandboxFileAccess.git", :tag => s.version }
   s.source_files = "AppSandboxFileAccess/Classes/*.{swift}"
-  s.requires_arc = true
-  s.swift_version = "5"
+  s.swift_version = '5'
 
 end
