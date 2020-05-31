@@ -63,9 +63,9 @@ open class AppSandboxFileAccess {
     ///   - persist: persist If YES will save the permission for future calls.
     ///   - block: The block that will be given access to the file or folder.
     /// - Returns: true if permission was granted or already available, false otherwise.
-    public func accessFilePath(_ filePath: String, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: AppSandboxFileAccessBlock? = nil) -> Bool {
-        let fileURL = URL(fileURLWithPath: filePath)
-        return accessFileURL(fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: block)
+    public func access(path: String, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: AppSandboxFileAccessBlock? = nil) -> Bool {
+        let fileURL = URL(fileURLWithPath: path)
+        return access(fileURL: fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: block)
     }
     
 
@@ -77,7 +77,7 @@ open class AppSandboxFileAccess {
     ///   - persist: persist If YES will save the permission for future calls.
     ///   - block: The block that will be given access to the file or folder.
     /// - Returns: true if permission was granted or already available, false otherwise.
-    public func accessFileURL(_ fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) -> Bool {
+    public func access(fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) -> Bool {
 
         let success = requestPermissions(forFileURL: fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: { securityScopedFileURL, bookmarkData in
             // execute the block with the file access permissions
@@ -100,10 +100,10 @@ open class AppSandboxFileAccess {
     ///   - fromWindow: The window from which to present the sheet
     ///   - persist: persist If YES will save the permission for future calls.
     ///   - block: The block that will be given access to the file or folder.
-    public func accessFilePath(_ filePath: String,fromWindow:NSWindow, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) {
+    public func access(path: String,fromWindow:NSWindow, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) {
         
-        let fileURL = URL(fileURLWithPath: filePath)
-        accessFileURL(fileURL, fromWindow: fromWindow, persistPermission: persist, with: block)
+        let fileURL = URL(fileURLWithPath: path)
+        access(fileURL: fileURL, fromWindow: fromWindow, persistPermission: persist, with: block)
     }
     
     /// Similar to accessFileURL - but if permission is required, the open panel is presented as a sheet on fromWindow
@@ -113,7 +113,7 @@ open class AppSandboxFileAccess {
     ///   - fromWindow: The window from which to present the sheet
     ///   - persist: persist If YES will save the permission for future calls.
     ///   - block: The block that will be given access to the file or folder. (it is only run if access is available)
-    public func accessFileURL(_ fileURL: URL,fromWindow:NSWindow, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) {
+    public func access(fileURL: URL,fromWindow:NSWindow, persistPermission persist: Bool, with block:AppSandboxFileAccessBlock? = nil) {
         
         requestPermissions(forFileURL: fileURL, fromWindow: fromWindow, persistPermission: persist) { (securityScopedFileURL, bookmarkData) in
             
@@ -165,11 +165,15 @@ open class AppSandboxFileAccess {
     ///    whenever a user introduces a file to the application. E.g. when dropping a file onto the application window
     ///    or dock or when using an NSOpenPanel.
     ///
+    ///    @discussion because this returns a synchronous success value, you can use it with askIfNecessary=false,
+    ///    to easily check whether you already have access to a given file without bothering the user
+    ///
+    ///
     /// - Parameters:
     ///   - fileURL: A file URL, either a file or folder, that the caller needs access to.
     ///   - askIfNecessary: whether to ask the user for permission
     ///   - persist: If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder.
+    ///   - block: The block that will be given access to the file or folder. This is only called if permission is granted
     /// - Returns: YES if permission was granted or already available, NO otherwise.
     public func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: AppSandboxFileSecurityScopeBlock? = nil) -> Bool {
 
@@ -178,13 +182,19 @@ open class AppSandboxFileAccess {
         
         var (allowedURL,bookmarkData) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
         
-        // if allowed url is nil, we need to ask the user for permission
-        if allowedURL == nil && askIfNecessary == true {
-            allowedURL = askPermission(for: standardisedFileURL)
+        // if url is stored, then we'll get a url and bookmark data. We can exit here.
+        if let storedURL = allowedURL {
+            block?(storedURL, bookmarkData)
+            return true
         }
         
-        // if the user did not give permission, exit out here
-        guard let confirmedAllowedURL = allowedURL else {
+        //we need permission - but we're not allowed to ask
+        if !askIfNecessary {
+            return false
+        }
+        
+        // ask permission. Exit if we don't get it
+        guard let confirmedAllowedURL = askPermission(for: standardisedFileURL) else {
             return false
         }
         
@@ -232,6 +242,7 @@ open class AppSandboxFileAccess {
             block(storedURL,bookmarkData)
             return
         }
+
         
         // we need to ask the user for permission
         askPermission(for: standardisedFileURL, fromWindow: fromWindow) { (url) in

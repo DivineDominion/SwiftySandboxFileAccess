@@ -1,4 +1,9 @@
-AppSandboxFileAccess
+SwiftyAppSandboxFileAccess
+====================
+
+This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a more swifty API and a couple of additional features.
+
+Details
 ====================
 
 A simple class that wraps up writing and accessing files outside a Mac apps App Sandbox files. The class will request permission from the user with a simple to understand dialog consistent with Apple's documentation and persist permissions across application runs using security bookmarks.
@@ -8,10 +13,7 @@ This is specifically useful for when you need to write files, or gain access to 
 When using this class, if the user needs to give permission to access the folder, the NSOpenPanel is used to request permission. Only the path or file requiring permission, or parent paths are selectable in the NSOpenPanel. The panel text, title and button are customisable.
 ![](screenshot-1.png)
 
-Uses in the Real World
-====================
 
-http://minifyapp.com &ndash; Minify uses this code to write combined, minified and compressed files to the same directory as the original. E.g. styles.css is minified into styles.min.css, then compressed to styles.min.css.gz.
 
 How to Use
 ====================
