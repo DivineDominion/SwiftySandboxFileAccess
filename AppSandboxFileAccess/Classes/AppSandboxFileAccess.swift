@@ -165,11 +165,15 @@ open class AppSandboxFileAccess {
     ///    whenever a user introduces a file to the application. E.g. when dropping a file onto the application window
     ///    or dock or when using an NSOpenPanel.
     ///
+    ///    @discussion because this returns a synchronous success value, you can use it with askIfNecessary=false,
+    ///    to easily check whether you already have access to a given file without bothering the user
+    ///
+    ///
     /// - Parameters:
     ///   - fileURL: A file URL, either a file or folder, that the caller needs access to.
     ///   - askIfNecessary: whether to ask the user for permission
     ///   - persist: If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder.
+    ///   - block: The block that will be given access to the file or folder. This is only called if permission is granted
     /// - Returns: YES if permission was granted or already available, NO otherwise.
     public func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: AppSandboxFileSecurityScopeBlock? = nil) -> Bool {
 
@@ -178,13 +182,19 @@ open class AppSandboxFileAccess {
         
         var (allowedURL,bookmarkData) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
         
-        // if allowed url is nil, we need to ask the user for permission
-        if allowedURL == nil && askIfNecessary == true {
-            allowedURL = askPermission(for: standardisedFileURL)
+        // if url is stored, then we'll get a url and bookmark data. We can exit here.
+        if let storedURL = allowedURL {
+            block?(storedURL, bookmarkData)
+            return true
         }
         
-        // if the user did not give permission, exit out here
-        guard let confirmedAllowedURL = allowedURL else {
+        //we need permission - but we're not allowed to ask
+        if !askIfNecessary {
+            return false
+        }
+        
+        // ask permission. Exit if we don't get it
+        guard let confirmedAllowedURL = askPermission(for: standardisedFileURL) else {
             return false
         }
         
@@ -232,6 +242,7 @@ open class AppSandboxFileAccess {
             block(storedURL,bookmarkData)
             return
         }
+
         
         // we need to ask the user for permission
         askPermission(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
