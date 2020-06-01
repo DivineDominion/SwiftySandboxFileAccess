@@ -116,6 +116,15 @@ class Manager {
 ```
 
 
+Upgrading from AppSandboxFileAccess
+=======
+
+All the functionality from the old version is still here - though the function names may have changed slightly
+
+1. Change your podfile to point to the new version
+1. Change your import declarations to import SwiftySandboxFileAccess
+1. Build, find any errors and update function calls as necessary
+1. (optional) Replace instances of `AppSandboxFileAccess` with `SandboxFileAccess`
 
 
 
