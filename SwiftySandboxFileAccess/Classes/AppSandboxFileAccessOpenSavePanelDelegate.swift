@@ -33,13 +33,26 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+import AppKit
+
+enum AppSandboxDelegateError: Error {
+    case triedToChooseWrongFile
+}
+
+extension AppSandboxDelegateError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .triedToChooseWrongFile:
+            return NSLocalizedString("Please allow the originally requested location", comment: "Wrong File")
+        }
+    }
+}
+
 
 class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelegate {
     private var pathComponents: [Any] = []
     
-    enum AppSandboxDelegateError: Error {
-        case triedToChooseWrongFile
-    }
+
     
     init(fileURL: URL) {
         super.init()
@@ -74,5 +87,11 @@ class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelega
         return true
     }
     
-
+    func panel(_ sender: Any, validate url: URL) throws {
+        let allowed = self.panel(sender, shouldEnable: url)
+        if !allowed {
+            NSSound.beep()
+            throw AppSandboxDelegateError.triedToChooseWrongFile
+        }
+    }
 }

@@ -376,11 +376,7 @@ open class AppSandboxFileAccess {
             NSApplication.shared.activate(ignoringOtherApps: true)
             let openPanelButtonPressed = openPanel.runModal().rawValue
             if openPanelButtonPressed == NSFileHandlingPanelOKButton {
-                
-                //using recent directories allows selecting an unwanted url
-                if openPanelDelegate.panel(self, shouldEnable: openPanel.url) == true {
-                    allowedURL = openPanel.url
-                }
+                allowedURL = openPanel.url
             }
             
             //use anonymous assignment to ensure that openPanelDelegate is retained

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,20 +30,20 @@
 
 /* Begin PBXFileReference section */
 		060ABB2DB4A94320E6DD9532B126B7B8 /* Pods-SwiftySandboxDemo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SwiftySandboxDemo-dummy.m"; sourceTree = "<group>"; };
-		1BCB2B3933E9A23EED646DB13919A9C0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1BCB2B3933E9A23EED646DB13919A9C0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		1C4C355172223D92E52F8C7990DBE2AB /* Pods-SwiftySandboxDemo-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-SwiftySandboxDemo-acknowledgements.markdown"; sourceTree = "<group>"; };
 		206764BD897AC4D493152786FF2D6830 /* SwiftySandboxFileAccess-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SwiftySandboxFileAccess-dummy.m"; sourceTree = "<group>"; };
 		249CDAA03496566D91FD5143A96FCFE1 /* Pods-SwiftySandboxDemo-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SwiftySandboxDemo-umbrella.h"; sourceTree = "<group>"; };
 		2F02FD31DDF5A743DEEAB8A3E0CCC9FB /* Pods-SwiftySandboxDemo-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SwiftySandboxDemo-acknowledgements.plist"; sourceTree = "<group>"; };
 		3C4992C48C1180A7645A006B23F750F6 /* AppSandboxFileAccess.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSandboxFileAccess.swift; path = SwiftySandboxFileAccess/Classes/AppSandboxFileAccess.swift; sourceTree = "<group>"; };
-		3E1F69C6B1AC2222C3B6FEF1FCA6A0F7 /* Pods_SwiftySandboxDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftySandboxDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D9C4B8546708160E1BA27FDECA567ED /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		65C47FA63CFA8711F4B67CBF1921F778 /* SwiftySandboxFileAccess.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = SwiftySandboxFileAccess.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		3E1F69C6B1AC2222C3B6FEF1FCA6A0F7 /* Pods_SwiftySandboxDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_SwiftySandboxDemo.framework; path = "Pods-SwiftySandboxDemo.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D9C4B8546708160E1BA27FDECA567ED /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		65C47FA63CFA8711F4B67CBF1921F778 /* SwiftySandboxFileAccess.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = SwiftySandboxFileAccess.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		762DB66B7A3CB66DF3F7239265C8C8EF /* Pods-SwiftySandboxDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SwiftySandboxDemo.release.xcconfig"; sourceTree = "<group>"; };
 		8E10F5FCFE59A6A33F4970B3C1BCF415 /* SwiftySandboxFileAccess.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftySandboxFileAccess.debug.xcconfig; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A840F1D735AF51748A29D5AE1DFE671F /* AppSandboxFileAccessOpenSavePanelDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSandboxFileAccessOpenSavePanelDelegate.swift; path = SwiftySandboxFileAccess/Classes/AppSandboxFileAccessOpenSavePanelDelegate.swift; sourceTree = "<group>"; };
-		AEA5D1368B548B4D58214917A7F264E2 /* SwiftySandboxFileAccess.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftySandboxFileAccess.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEA5D1368B548B4D58214917A7F264E2 /* SwiftySandboxFileAccess.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftySandboxFileAccess.framework; path = SwiftySandboxFileAccess.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6B1D9B5B1E800160B9A30E46D0BF8CB /* Pods-SwiftySandboxDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SwiftySandboxDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		BA6EE05C802C512952751285A1137E77 /* SwiftySandboxFileAccess.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SwiftySandboxFileAccess.modulemap; sourceTree = "<group>"; };
 		BCA9837D840F4D9229518A40FB6A2EA6 /* AppSandboxFileAccessPersist.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSandboxFileAccessPersist.swift; path = SwiftySandboxFileAccess/Classes/AppSandboxFileAccessPersist.swift; sourceTree = "<group>"; };
@@ -250,10 +250,10 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -448,6 +448,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8E10F5FCFE59A6A33F4970B3C1BCF415 /* SwiftySandboxFileAccess.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -485,6 +486,7 @@
 			baseConfigurationReference = B6B1D9B5B1E800160B9A30E46D0BF8CB /* Pods-SwiftySandboxDemo.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -523,6 +525,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C442ECFD4E55A4C66E1E7F21293851B8 /* SwiftySandboxFileAccess.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -560,6 +563,7 @@
 			baseConfigurationReference = 762DB66B7A3CB66DF3F7239265C8C8EF /* Pods-SwiftySandboxDemo.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
