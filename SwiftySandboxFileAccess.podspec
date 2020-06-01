@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
   s.name         = "SwiftySandboxFileAccess"
   s.version      = "2.0.0"
-  s.summary      = "A class that wraps up writing and accessing files outside a Mac apps App Sandbox files into a simple interface."
+  s.summary      = "A simpler way to access and store permissions for files outside of the AppStore sandbox."
 
   s.description  = <<-DESC
                    A class that wraps up writing and accessing files outside a Mac apps App Sandbox files into a simple interface.
