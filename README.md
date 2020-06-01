@@ -35,22 +35,22 @@ Main Function Groups
 
 All functions have url or path variants. This shows only the url variants.
 
-###func persistPermission(url: URL) -> Data?
+### func persistPermission(url: URL) -> Data?
 
 saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
 
-###func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
+### func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
 
 Request permission to access a file. 
 
 You can set askIfNecessary to false to check whether you have access without interrupting the user.
 
 
-###func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
+### func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
 
 Request permission to access a file. If needed, the open panel will be presented as a sheet from the given window.
 
-###func access(fileURL: URL...
+### func access(fileURL: URL...
 
 same as the requestPermission variants - but within the block, startAccessingSecurityScopedResource has already been called
 
