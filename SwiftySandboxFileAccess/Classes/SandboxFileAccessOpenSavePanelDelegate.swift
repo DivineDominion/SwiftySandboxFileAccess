@@ -1,7 +1,4 @@
 
-//  AppSandboxFileAccessOpenSavePanelDelegate.m
-//  AppSandboxFileAccess
-//
 //  Created by Leigh McCulloch on 23/11/2013.
 //
 //  Copyright (c) 2013, Leigh McCulloch
@@ -35,11 +32,11 @@
 
 import AppKit
 
-enum AppSandboxDelegateError: Error {
+enum SandboxDelegateError: Error {
     case triedToChooseWrongFile
 }
 
-extension AppSandboxDelegateError: LocalizedError {
+extension SandboxDelegateError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .triedToChooseWrongFile:
@@ -49,7 +46,7 @@ extension AppSandboxDelegateError: LocalizedError {
 }
 
 
-class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelegate {
+class SandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelegate {
     private var pathComponents: [Any] = []
     
 
@@ -91,7 +88,7 @@ class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelega
         let allowed = self.panel(sender, shouldEnable: url)
         if !allowed {
             NSSound.beep()
-            throw AppSandboxDelegateError.triedToChooseWrongFile
+            throw SandboxDelegateError.triedToChooseWrongFile
         }
     }
 }

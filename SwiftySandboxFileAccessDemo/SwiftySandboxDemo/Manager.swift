@@ -14,19 +14,19 @@ class Manager {
     
     /// Persist URL when a file is dropped on the dock (so permission is implicitly given)
     func persist(_ urls:[URL]){
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         for url in urls {
             _ = access.persistPermission(url:url)
-            lastOpenedPath = url.path
+            lastDockDroppedPath = url.path
         }
     }
     
     func clearStoredPermissions() {
-        AppSandboxFileAccessPersist.deleteAllBookmarkData()
+        SandboxFileAccessPersist.deleteAllBookmarkData()
     }
     
     func pickFile(from window:NSWindow){
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         access.access(fileURL: urlToRequest,
                       fromWindow: window,
                       persistPermission: true) {
@@ -35,7 +35,7 @@ class Manager {
     }
     
     func pickFile() {
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         let success = access.access(fileURL: urlToRequest,
                                     askIfNecessary: true,
                                     persistPermission: true) {
@@ -44,12 +44,12 @@ class Manager {
         print("success: \(success)")
     }
     
-    func checkAccessToLastPath() {
-        guard let lastOpenedPath = lastOpenedPath else {
+    func checkAccessToLastDockDroppedPath() {
+        guard let lastOpenedPath = lastDockDroppedPath else {
             return
         }
         
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         let success = access.access(path: lastOpenedPath,
                                        askIfNecessary: false)
         
@@ -63,13 +63,13 @@ class Manager {
     }()
     
     
-    static let lastOpenedPathKey = "lastOpenedPath"
-    var lastOpenedPath:String? {
+    static let lastDockDroppedPathKey = "lastDockDroppedPath"
+    var lastDockDroppedPath:String? {
         get {
-            return UserDefaults.standard.string(forKey: Manager.lastOpenedPathKey)
+            return UserDefaults.standard.string(forKey: Manager.lastDockDroppedPathKey)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: Manager.lastOpenedPathKey)
+            UserDefaults.standard.set(newValue, forKey: Manager.lastDockDroppedPathKey)
         }
     }
 }

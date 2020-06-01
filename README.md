@@ -1,7 +1,7 @@
-SwiftyAppSandboxFileAccess
+SwiftySandboxFileAccess
 ====================
 
-This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a more swifty API and a couple of additional features.
+This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a more swifty API and a handful of additional features.
 
 Details
 ====================
@@ -68,19 +68,19 @@ class Manager {
     
     /// Persist URL when a file is dropped on the dock (so permission is implicitly given)
     func persist(_ urls:[URL]){
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         for url in urls {
             _ = access.persistPermission(url:url)
-            lastOpenedPath = url.path
+            lastDockDroppedPath = url.path
         }
     }
     
     func clearStoredPermissions() {
-        AppSandboxFileAccessPersist.deleteAllBookmarkData()
+        SandboxFileAccessPersist.deleteAllBookmarkData()
     }
     
     func pickFile(from window:NSWindow){
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         access.access(fileURL: urlToRequest,
                       fromWindow: window,
                       persistPermission: true) {
@@ -89,7 +89,7 @@ class Manager {
     }
     
     func pickFile() {
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         let success = access.access(fileURL: urlToRequest,
                                     askIfNecessary: true,
                                     persistPermission: true) {
@@ -98,12 +98,12 @@ class Manager {
         print("success: \(success)")
     }
     
-    func checkAccessToLastPath() {
-        guard let lastOpenedPath = lastOpenedPath else {
+    func checkAccessToLastDockDroppedPath() {
+        guard let lastOpenedPath = lastDockDroppedPath else {
             return
         }
         
-        let access = AppSandboxFileAccess()
+        let access = SandboxFileAccess()
         let success = access.access(path: lastOpenedPath,
                                        askIfNecessary: false)
         

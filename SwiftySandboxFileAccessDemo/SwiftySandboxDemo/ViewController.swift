@@ -37,7 +37,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func checkAccess(_ sender: Any) {
-        Manager.shared.checkAccessToLastPath()
+        Manager.shared.checkAccessToLastDockDroppedPath()
     }
     
 }
