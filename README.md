@@ -34,36 +34,89 @@ In Xcode click on your project file, then the Capabilities tab. Turn on App Sand
 In your application, whenever you need to read or write a file, wrap the code accessing the file wrap like the following. The following example will get permission to access the parent directory of a file the application already knows about.
 
 ```
-#import "AppSandboxFileAccess.h"
+import SwiftySandboxFileAccess
 
-...
-
-// initialise the file access class
-AppSandboxFileAccess *fileAccess = [AppSandboxFileAccess fileAccess];
-
-// the application was provided this file when the user dragged this file on to the app
-NSString *file = @"/Users/Wookie/AwesomeRecipe.txt";
-
-// persist permission to access the file the user introduced to the app, so we can always 
-// access it and then the AppSandboxFileAccess class won't prompt for it if you wrap access to it
-[fileAccess persistPermissionPath:file];
-
-// get the parent directory for the file
-NSString *parentDirectory = [file stringByDeletingLastPathComponent];
-				
-// get access to the parent directory
-BOOL accessAllowed = [fileAccess accessFilePath:parentDirectory withBlock:^{
-
-  // write or read files in that directory
-  // e.g. write AwesomeRecipe.txt.gz to the same directory as the txt file
-  
-} persistPermission:YES];
-
-if (!accessAllowed) {
-  NSLog(@"Sad Wookie");
+class Manager {
+    static let shared = Manager()
+    
+    /// Persist URL when a file is dropped on the dock (so permission is implicitly given)
+    func persist(_ urls:[URL]){
+        let access = AppSandboxFileAccess()
+        for url in urls {
+            _ = access.persistPermission(url:url)
+            lastOpenedPath = url.path
+        }
+    }
+    
+    func clearStoredPermissions() {
+        AppSandboxFileAccessPersist.deleteAllBookmarkData()
+    }
+    
+    func pickFile(from window:NSWindow){
+        let access = AppSandboxFileAccess()
+        access.access(fileURL: urlToRequest,
+                      fromWindow: window,
+                      persistPermission: true) {
+                        print("access the URL here")
+        }
+    }
+    
+    func pickFile() {
+        let access = AppSandboxFileAccess()
+        let success = access.access(fileURL: urlToRequest,
+                                    askIfNecessary: true,
+                                    persistPermission: true) {
+                                        print("access the URL here")
+        }
+        print("success: \(success)")
+    }
+    
+    func checkAccessToLastPath() {
+        guard let lastOpenedPath = lastOpenedPath else {
+            return
+        }
+        
+        let access = AppSandboxFileAccess()
+        let success = access.access(path: lastOpenedPath,
+                                       askIfNecessary: false)
+        
+        print("access status : \(success)")
+    }
+    
+	//see file in demo for utility details
 }
 
 ```
+
+Main Function Groups
+====================
+
+All functions have url or path variants. This shows only the url variants.
+
+func persistPermission(url: URL) -> Data?
+
+saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
+
+func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
+
+Request permission to access a file. 
+
+You can set askIfNecessary to false to check whether you have access without interrupting the user.
+
+
+func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
+
+Request permission to access a file. If needed, the open panel will be presented as a sheet from the given window.
+
+func access(fileURL: URL...
+
+same as the requestPermission variants - but within the block, startAccessingSecurityScopedResource has already been called
+
+
+
+
+
+
 
 License
 ====================
