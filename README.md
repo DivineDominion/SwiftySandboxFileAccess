@@ -25,11 +25,38 @@ How to Use
 pod 'SwiftySandboxFileAccess'
 ```
 
-![](screenshot-3.png)
-
 In Xcode click on your project file, then the Capabilities tab. Turn on App Sandbox and change 'User Selected File' to 'Read/Write' or 'Read Only', whichever you need. In your project Xcode will have created a .entitlements file. Open this and you should see the below. If you plan on persisting permissions you'll need to add the third entitlement.
 
 ![](screenshot-2.png)
+
+
+Main Function Groups
+====================
+
+All functions have url or path variants. This shows only the url variants.
+
+###func persistPermission(url: URL) -> Data?
+
+saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
+
+###func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
+
+Request permission to access a file. 
+
+You can set askIfNecessary to false to check whether you have access without interrupting the user.
+
+
+###func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
+
+Request permission to access a file. If needed, the open panel will be presented as a sheet from the given window.
+
+###func access(fileURL: URL...
+
+same as the requestPermission variants - but within the block, startAccessingSecurityScopedResource has already been called
+
+
+Example
+=======
 
 In your application, whenever you need to read or write a file, wrap the code accessing the file wrap like the following. The following example will get permission to access the parent directory of a file the application already knows about.
 
@@ -87,32 +114,6 @@ class Manager {
 }
 
 ```
-
-Main Function Groups
-====================
-
-All functions have url or path variants. This shows only the url variants.
-
-func persistPermission(url: URL) -> Data?
-
-saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
-
-func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
-
-Request permission to access a file. 
-
-You can set askIfNecessary to false to check whether you have access without interrupting the user.
-
-
-func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
-
-Request permission to access a file. If needed, the open panel will be presented as a sheet from the given window.
-
-func access(fileURL: URL...
-
-same as the requestPermission variants - but within the block, startAccessingSecurityScopedResource has already been called
-
-
 
 
 
