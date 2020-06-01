@@ -54,7 +54,7 @@ public class AppSandboxFileAccessPersist: AppSandboxFileAccessProtocol {
         return nil
     }
     
-    public func setBookmarkData(_ data: Data?, for url: URL) {
+    public func setBookmark(data: Data?, for url: URL) {
         let defaults = UserDefaults.standard
         let key = AppSandboxFileAccessPersist.keyForBookmarkData(for: url)
         defaults.set(data, forKey: key)

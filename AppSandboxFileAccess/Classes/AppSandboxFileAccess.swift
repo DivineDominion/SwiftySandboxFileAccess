@@ -4,7 +4,7 @@ public typealias AppSandboxFileSecurityScopeBlock = (URL?, Data?) -> Void
 
 public protocol AppSandboxFileAccessProtocol: class {
     func bookmarkData(for url: URL) -> Data?
-    func setBookmarkData(_ data: Data?, for url: URL)
+    func setBookmark(data: Data?, for url: URL)
     func clearBookmarkData(for url: URL)
 }
 
@@ -200,7 +200,7 @@ open class AppSandboxFileAccess {
         
         // if we have no bookmark data and we want to persist, we need to create it
         if persist == true && bookmarkData == nil {
-            bookmarkData = persistPermissionURL(confirmedAllowedURL)
+            bookmarkData = persistPermission(url: confirmedAllowedURL)
         }
         
         //if block
@@ -249,7 +249,7 @@ open class AppSandboxFileAccess {
             var bookmarkData: Data? = nil
             // if we have no bookmark data and we want to persist, we need to create it
             if let url = url, persist == true {
-                bookmarkData = self.persistPermissionURL(url)
+                bookmarkData = self.persistPermission(url: url)
             }
             
             block(url, bookmarkData)
@@ -261,9 +261,9 @@ open class AppSandboxFileAccess {
     ///
     /// - Parameter path: The path with permission that will be persisted.
     /// - Returns: Bookmark data if permission was granted or already available, nil otherwise.
-    public func persistPermissionPath(_ path: String) -> Data? {
+    public func persistPermission(path: String) -> Data? {
 
-        return persistPermissionURL(URL(fileURLWithPath: path))
+        return persistPermission(url: URL(fileURLWithPath: path))
     }
     
 
@@ -276,7 +276,7 @@ open class AppSandboxFileAccess {
     ///
     /// - Parameter url: The URL with permission that will be persisted.
     /// - Returns: Bookmark data if permission was granted or already available, nil otherwise.
-    public func persistPermissionURL(_ url: URL) -> Data? {
+    public func persistPermission(url: URL) -> Data? {
        
         // store the sandbox permissions
         var bookmarkData: Data? = nil
@@ -285,7 +285,7 @@ open class AppSandboxFileAccess {
         } catch {
         }
         if bookmarkData != nil {
-            bookmarkPersistanceDelegateOrDefault.setBookmarkData(bookmarkData, for: url)
+            bookmarkPersistanceDelegateOrDefault.setBookmark(data: bookmarkData, for: url)
         }
         return bookmarkData
     }
@@ -313,7 +313,7 @@ open class AppSandboxFileAccess {
                 bookmarkData = nil
                 bookmarkPersistanceDelegateOrDefault.clearBookmarkData(for: standardisedFileURL)
                 if allowedURL != nil {
-                    bookmarkData = persistPermissionURL(allowedURL!)
+                    bookmarkData = persistPermission(url: allowedURL!)
                     if bookmarkData == nil {
                         allowedURL = nil
                     }
