@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.author       = { "Leigh McCulloch" => "leigh@mcchouse.com","Rob Jonson" => "Rob@HobbyistSoftware.com" }
   s.platform     = :osx, "10.9"
   s.source       = { :git => "https://github.com/ConfusedVorlon/SwiftySandboxFileAccess.git", :tag => s.version }
-  s.source_files = "AppSandboxFileAccess/Classes/*.{swift}"
+  s.source_files = "SwiftySandboxFileAccess/Classes/*.{swift}"
   s.swift_version = '5'
 
 end

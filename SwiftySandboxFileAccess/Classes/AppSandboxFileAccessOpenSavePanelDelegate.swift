@@ -33,8 +33,13 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+
 class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelegate {
     private var pathComponents: [Any] = []
+    
+    enum AppSandboxDelegateError: Error {
+        case triedToChooseWrongFile
+    }
     
     init(fileURL: URL) {
         super.init()
@@ -68,4 +73,6 @@ class AppSandboxFileAccessOpenSavePanelDelegate: NSObject, NSOpenSavePanelDelega
         // there were no mismatches (or no components meaning url is root)
         return true
     }
+    
+
 }

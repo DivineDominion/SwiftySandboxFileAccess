@@ -338,7 +338,7 @@ open class AppSandboxFileAccess {
         return existingURL
     }
     
-    private func openPanel(for url:URL) -> (NSOpenPanel,NSOpenSavePanelDelegate) {
+    private func openPanel(for url:URL) -> (NSOpenPanel,AppSandboxFileAccessOpenSavePanelDelegate) {
         // create delegate that will limit which files in the open panel can be selected, to ensure only a folder
         // or file giving permission to the file requested can be selected
         let openPanelDelegate = AppSandboxFileAccessOpenSavePanelDelegate(fileURL: url)
@@ -376,7 +376,11 @@ open class AppSandboxFileAccess {
             NSApplication.shared.activate(ignoringOtherApps: true)
             let openPanelButtonPressed = openPanel.runModal().rawValue
             if openPanelButtonPressed == NSFileHandlingPanelOKButton {
-                allowedURL = openPanel.url
+                
+                //using recent directories allows selecting an unwanted url
+                if openPanelDelegate.panel(self, shouldEnable: openPanel.url) == true {
+                    allowedURL = openPanel.url
+                }
             }
             
             //use anonymous assignment to ensure that openPanelDelegate is retained
