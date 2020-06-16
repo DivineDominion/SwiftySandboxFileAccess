@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/ConfusedVorlon/SwiftySandboxFileAccess"
   s.license      = { :type => "BSD-2", :file => "LICENSE" }
-  s.author       = { "Leigh McCulloch" => "leigh@mcchouse.com","Rob Jonson" => "Rob@HobbyistSoftware.com" }
+  s.author       = { "Rob Jonson" => "Rob@HobbyistSoftware.com","Leigh McCulloch" => "leigh@mcchouse.com" }
   s.platform     = :osx, "10.9"
   s.source       = { :git => "https://github.com/ConfusedVorlon/SwiftySandboxFileAccess.git", :tag => s.version }
   s.source_files = "SwiftySandboxFileAccess/Classes/*.{swift}"
