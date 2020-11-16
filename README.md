@@ -35,24 +35,23 @@ Main Function Groups
 
 All functions have url or path variants. This shows only the url variants.
 
-### func persistPermission(url: URL) -> Data?
+### `persistPermission(url:) -> Data?`
 
-saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
+Saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
 
-### func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true ... ) -> Bool
+### `requestPermissions(forFileURL:askIfNecessary:persistPermission:with:) -> Bool`
 
 Request permission to access a file. 
 
-You can set askIfNecessary to false to check whether you have access without interrupting the user.
+You can set `askIfNecessary` to `false` to check whether you have access without interrupting the user.
 
+### `requestPermissions(forFilePath:fromWindow:persistPermission:with:) -> Bool`
 
-### func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow...
+Request permission to access a file at `fileURL`. If needed, the open panel will be presented as a sheet from the given window.
 
-Request permission to access a file. If needed, the open panel will be presented as a sheet from the given window.
+### `access(fileURL:askIfNecessary:persistPermission:with:) -> Bool`
 
-### func access(fileURL: URL...
-
-same as the requestPermission variants - but within the block, startAccessingSecurityScopedResource has already been called
+Same as the `requestPermission(...)` variants - but within the block, `startAccessingSecurityScopedResource` has already been called.
 
 
 Example
@@ -60,7 +59,7 @@ Example
 
 In your application, whenever you need to read or write a file, wrap the code accessing the file wrap like the following. The following example will get permission to access the parent directory of a file the application already knows about.
 
-```
+```swift
 import SwiftySandboxFileAccess
 
 class Manager {
