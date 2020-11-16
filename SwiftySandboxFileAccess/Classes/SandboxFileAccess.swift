@@ -1,3 +1,5 @@
+import AppKit
+
 //backwards compatibility with AppSandboxFileAccess
 public typealias AppSandboxFileAccess = SandboxFileAccess
 public typealias AppSandboxFileAccessProtocol = SandboxFileAccessProtocol
