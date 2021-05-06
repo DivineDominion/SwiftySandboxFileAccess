@@ -30,6 +30,8 @@
 //  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+import Foundation
+
 public class SandboxFileAccessPersist: SandboxFileAccessProtocol {
     
     public func bookmarkData(for url: URL) -> Data? {
