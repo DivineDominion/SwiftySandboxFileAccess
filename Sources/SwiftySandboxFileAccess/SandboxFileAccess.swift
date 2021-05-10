@@ -8,7 +8,7 @@ public typealias SandboxFileAccessBlock = () -> Void
 public typealias SandboxFileSecurityScopeBlock = (URL?, Data?) -> Void
 
 
-public protocol SandboxFileAccessProtocol: class {
+public protocol SandboxFileAccessProtocol: AnyObject {
     func bookmarkData(for url: URL) -> Data?
     func setBookmark(data: Data?, for url: URL)
     func clearBookmarkData(for url: URL)
