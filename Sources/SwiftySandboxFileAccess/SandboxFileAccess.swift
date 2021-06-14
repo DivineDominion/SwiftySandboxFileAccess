@@ -37,13 +37,8 @@ open class SandboxFileAccess {
     open var title:String = {NSLocalizedString("Allow Access", comment: "Sandbox Access panel title.")}()
 
     /// The message contained on the the NSOpenPanel displayed when asking permission to access a file.
-    open var message:String = {
-        let applicationName = (Bundle.main[.displayName] as? String)
-            ?? (Bundle.main[.name] as? String)
-            ?? "This App"
-        let formatString = NSLocalizedString("%@ needs to access this path to continue. Click Allow to continue.", comment: "Sandbox Access panel message.")
-        return String(format: formatString, applicationName)
-    }()
+    /// If this is null, then a default message is constructed
+    open var message:String?
 
     /// The prompt button on the the NSOpenPanel displayed when asking permission to access a file.
     open var prompt:String = {NSLocalizedString("Allow", comment: "Sandbox Access panel prompt.")}()
@@ -304,6 +299,14 @@ open class SandboxFileAccess {
     
     //MARK: Utility methods
     
+    private func defaultOpenPanelMessage(forFileURL fileURL:URL) -> String {
+           let applicationName = (Bundle.main[.displayName] as? String)
+               ?? (Bundle.main[.name] as? String)
+               ?? "This App"
+        
+        return "\(applicationName) needs to access '\(fileURL.lastPathComponent)' to continue. Click Allow to continue."
+    }
+    
     private func allowedURLAndBookmarkData(forFileURL fileURL:URL) -> (URL?,Data?) {
         
         var allowedURL: URL? = nil
@@ -360,7 +363,7 @@ open class SandboxFileAccess {
         FileManager.default.fileExists(atPath: existingURL.path, isDirectory: &isDirectory)
         
         let openPanel = NSOpenPanel()
-        openPanel.message = self.message
+        openPanel.message = self.message ?? defaultOpenPanelMessage(forFileURL: url)
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = !isDirectory.boolValue
         openPanel.canChooseDirectories = true
