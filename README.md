@@ -18,12 +18,20 @@ When using this class, if the user needs to give permission to access the folder
 How to Use
 ====================
 
-### CocoaPods
+### SwiftPackageManager
+
+Standard drill!
+
+### CocoaPods (deprecated!)
 
 
 ```ruby
 pod 'SwiftySandboxFileAccess'
 ```
+
+I won't be publishing podspec updates any more.
+
+###  Entitlements:
 
 In Xcode click on your project file, then the Capabilities tab. Turn on App Sandbox and change 'User Selected File' to 'Read/Write' or 'Read Only', whichever you need. In your project Xcode will have created a .entitlements file. Open this and you should see the below. If you plan on persisting permissions you'll need to add the third entitlement.
 
