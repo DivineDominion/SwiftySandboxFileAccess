@@ -18,7 +18,7 @@ public protocol SandboxFileAccessProtocol: AnyObject {
 extension Bundle {
     enum Key: String {
         case name =  "CFBundleName",
-        displayName = "CFBundleDisplayName"
+             displayName = "CFBundleDisplayName"
     }
     
     subscript(index: Bundle.Key) ->  Any? {
@@ -32,18 +32,16 @@ extension Bundle {
 
 
 open class SandboxFileAccess {
-
+    
     /// The title of the NSOpenPanel displayed when asking permission to access a file. Default: "Allow Access"
     open var title:String = {NSLocalizedString("Allow Access", comment: "Sandbox Access panel title.")}()
-
+    
     /// The message contained on the the NSOpenPanel displayed when asking permission to access a file.
     /// If this is null, then a default message is constructed
     open var message:String?
-
+    
     /// The prompt button on the the NSOpenPanel displayed when asking permission to access a file.
     open var prompt:String = {NSLocalizedString("Allow", comment: "Sandbox Access panel prompt.")}()
-
-    
     
     
     /// This is an optional delegate object that can be provided to customize the persistance of bookmark data (e.g. in a Core Data database).
@@ -58,134 +56,38 @@ open class SandboxFileAccess {
         
     }
     
-
-    
-
-    /// Access a file URL to read or write, automatically gaining permission from the user with NSOpenPanel if required and using persisted permissions if possible.
-    ///
-    /// - Parameters:
-    ///   - fileURL: A file URL, either a file or folder, that the caller needs access to.
-    ///   - askIfNecessary: whether to ask the user for permission
-    ///   - persist: persist If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder.  Within this block - startAccessingSecurityScopedResource has already been called
-    /// - Returns: true if permission was granted or already available, false otherwise.
-    public func access(fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool = true, with block:SandboxFileAccessBlock? = nil) -> Bool {
-
-        let success = requestPermissions(forFileURL: fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: { securityScopedFileURL, bookmarkData in
-            // execute the block with the file access permissions
-
-            if (securityScopedFileURL?.startAccessingSecurityScopedResource() == true) {
-                block?()
-                securityScopedFileURL?.stopAccessingSecurityScopedResource()
-            }
-            
-
-        })
-        
-        return success
-    }
-    
-
-    
-    /// Similar to accessFileURL - but if permission is required, the open panel is presented as a sheet on fromWindow
-    ///
-    /// - Parameters:
-    ///   - fileURL: A file URL, either a file or folder, that the caller needs access to.
-    ///   - fromWindow: The window from which to present the sheet
-    ///   - persist: persist If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder. (it is only run if access is available).  Within this block - startAccessingSecurityScopedResource has already been called
-    public func access(fileURL: URL,fromWindow:NSWindow, persistPermission persist: Bool = true, with block:SandboxFileAccessBlock? = nil) {
-        
-        requestPermissions(forFileURL: fileURL, fromWindow: fromWindow, persistPermission: persist) { (securityScopedFileURL, bookmarkData) in
-            
-            guard let securityScopedFileURL = securityScopedFileURL else {
-                return
-            }
-            
-            if (securityScopedFileURL.startAccessingSecurityScopedResource() == true) {
-                block?()
-                securityScopedFileURL.stopAccessingSecurityScopedResource()
-            }
-        }
-    }
-    
-
-
-    
-    /// Request access permission for a file path to read or write, automatically with NSOpenPanel if required and using persisted permissions if possible.
-    /// startAccessingSecurityScopedResource is NOT autmatically called
-    ///
-    ///    @discussion Use this function to access a file URL to either read or write in an application restricted by the App Sandbox.
-    ///    This function will ask the user for permission if necessary using a well formed NSOpenPanel. The user will
-    ///    have the option of approving access to the URL you specify, or a parent path for that URL. If persist is YES
-    ///    the permission will be stored as a bookmark in NSUserDefaults and further calls to this function will
-    ///    load the saved permission and not ask for permission again.
-    ///
-    ///    @discussion If the file URL does not exist, it's parent directory will be asked for permission instead, since permission
-    ///    to the directory will be required to write the file. If the parent directory doesn't exist, it will ask for
-    ///    permission of whatever part of the parent path exists.
-    ///
-    ///    @discussion Note: If the caller has permission to access a file because it was dropped onto the application or introduced
-    ///    to the application in some other way, this function will not be aware of that permission and still prompt
-    ///    the user. To prevent this, use the persistPermission function to persist a permission you've been given
-    ///    whenever a user introduces a file to the application. E.g. when dropping a file onto the application window
-    ///    or dock or when using an NSOpenPanel.
-    ///
-    ///    @discussion because this returns a synchronous success value, you can use it with askIfNecessary=false,
-    ///    to easily check whether you already have access to a given file without bothering the user
-    ///
-    ///
-    /// - Parameters:
-    ///   - fileURL: A file URL, either a file or folder, that the caller needs access to.
-    ///   - askIfNecessary: whether to ask the user for permission
-    ///   - persist: If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder. This is only called if permission is granted
-    /// - Returns: YES if permission was granted or already available, NO otherwise.
-    public func requestPermissions(forFileURL fileURL: URL, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: SandboxFileSecurityScopeBlock? = nil) -> Bool {
-
+    /// Check whether we have access to a given file synchronously
+    /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
+    /// - Returns: true if we already have permission to access the given file
+    public func isAllowedToAccess(fileURL:URL) -> Bool {
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
-        var (allowedURL,bookmarkData) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
+        let (allowedURL,_) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
         
-        // if url is stored, then we'll get a url and bookmark data. We can exit here.
-        if let storedURL = allowedURL {
-            block?(storedURL, bookmarkData)
+        // if url is stored, then we'll get a url and bookmark data.
+        if allowedURL != nil {
             return true
         }
         
-        //we need permission - but we're not allowed to ask
-        if !askIfNecessary {
-            return false
-        }
-        
-        // ask permission. Exit if we don't get it
-        guard let confirmedAllowedURL = askPermission(for: standardisedFileURL) else {
-            return false
-        }
-        
-        // if we have no bookmark data and we want to persist, we need to create it
-        if persist == true && bookmarkData == nil {
-            bookmarkData = persistPermission(url: confirmedAllowedURL)
-        }
-        
-        //if block
-        block?(confirmedAllowedURL, bookmarkData)
-        
-        return true
+        return false
     }
     
-
     
     
     /// Request permission for file - but if user is asked, then present file panel as sheet
     ///
     /// - Parameters:
     ///   - fileURL: required URL
+    ///   - askIfNecessary: whether to ask the user for permission
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
     ///   - block: block called with url and bookmark data if available
-    public func requestPermissions(forFileURL fileURL: URL, fromWindow:NSWindow, persistPermission persist: Bool = true, with block: @escaping SandboxFileSecurityScopeBlock) {
+    public func access(fileURL: URL,
+                       askIfNecessary:Bool = true,
+                       fromWindow:NSWindow? = nil,
+                       persistPermission persist: Bool = true,
+                       with block: @escaping SandboxFileSecurityScopeBlock) {
         
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
@@ -197,22 +99,49 @@ open class SandboxFileAccess {
             block(storedURL,bookmarkData)
             return
         }
-
         
+ 
         // we need to ask the user for permission
-        askPermission(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
+        
+        //but we're not allowed to ask
+        if !askIfNecessary {
+            block(nil, nil)
+            return
+        }
+        
+        if let fromWindow = fromWindow {
+            askPermission(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
+                var bookmarkData: Data? = nil
+                // if we have no bookmark data and we want to persist, we need to create it
+                if let url = url, persist == true {
+                    bookmarkData = self.persistPermission(url: url)
+                }
+                
+                block(url, bookmarkData)
+            }
+        }
+        else {
             var bookmarkData: Data? = nil
-            // if we have no bookmark data and we want to persist, we need to create it
-            if let url = url, persist == true {
-                bookmarkData = self.persistPermission(url: url)
+            
+            // ask permission. Exit if we don't get it
+            guard let confirmedAllowedURL = askPermission(for: standardisedFileURL) else {
+                block(nil, nil)
+                return
             }
             
-            block(url, bookmarkData)
+            // if we have no bookmark data and we want to persist, we need to create it
+            if persist == true {
+                bookmarkData = persistPermission(url: confirmedAllowedURL)
+            }
+            
+            block(confirmedAllowedURL, bookmarkData)
         }
+        
+        
     }
     
     
-
+    
     /// Persist a security bookmark for the given URL. The calling application must already have permission.
     
     /// discussion Use this function to persist permission of a URL that has already been granted when a user introduced
@@ -223,7 +152,7 @@ open class SandboxFileAccess {
     /// - Parameter url: The URL with permission that will be persisted.
     /// - Returns: Bookmark data if permission was granted or already available, nil otherwise.
     public func persistPermission(url: URL) -> Data? {
-       
+        
         // store the sandbox permissions
         var bookmarkData: Data? = nil
         do {
@@ -239,9 +168,9 @@ open class SandboxFileAccess {
     //MARK: Utility methods
     
     private func defaultOpenPanelMessage(forFileURL fileURL:URL) -> String {
-           let applicationName = (Bundle.main[.displayName] as? String)
-               ?? (Bundle.main[.name] as? String)
-               ?? "This App"
+        let applicationName = (Bundle.main[.displayName] as? String)
+            ?? (Bundle.main[.name] as? String)
+            ?? "This App"
         
         return "\(applicationName) needs to access '\(fileURL.lastPathComponent)' to continue. Click Allow to continue."
     }
@@ -319,7 +248,7 @@ open class SandboxFileAccess {
     
     private func askPermission(for url: URL) -> URL? {
         let requestedURL = url
- 
+        
         // this url will be the url allowed, it might be a parent url of the url passed in
         var allowedURL: URL? = nil
         
@@ -345,14 +274,14 @@ open class SandboxFileAccess {
         return allowedURL
     }
     
-
+    
     private func askPermission(for url: URL, fromWindow:NSWindow, with block: @escaping (URL?)->Void) {
         let requestedURL = url
         
         // display the open panel
         let displayOpenPanelBlock = {
             let (openPanel,openPanelDelegate) = self.openPanel(for: requestedURL)
-     
+            
             NSApplication.shared.activate(ignoringOtherApps: true)
             
             openPanel.beginSheetModal(for:fromWindow) { (result) in
@@ -366,14 +295,14 @@ open class SandboxFileAccess {
                 //use anonymous assignment to ensure that openPanelDelegate is retained
                 _ = openPanelDelegate
             }
-
+            
         }
         if Thread.isMainThread {
             displayOpenPanelBlock()
         } else {
-            DispatchQueue.main.sync(execute: displayOpenPanelBlock)
+            DispatchQueue.main.async(execute: displayOpenPanelBlock)
         }
-
+        
     }
 }
 
