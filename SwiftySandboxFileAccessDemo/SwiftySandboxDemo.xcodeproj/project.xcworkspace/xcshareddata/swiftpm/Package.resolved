@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SwiftySandboxFileAccess",
+        "repositoryURL": "/Users/rob/Documents/Development/Mac/Packages/SwiftySandboxFileAccess",
+        "state": {
+          "branch": "master",
+          "revision": "0d6a5362d79ed7f1e346228e92a932c6dff9c4b4",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

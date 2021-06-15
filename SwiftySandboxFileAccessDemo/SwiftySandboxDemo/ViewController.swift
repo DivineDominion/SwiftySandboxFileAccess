@@ -32,6 +32,11 @@ class ViewController: NSViewController {
         Manager.shared.pickFile()
     }
     
+    @IBAction func accessDownloads(_ sender: Any) {
+        Manager.shared.accessDownloads(from:self.view.window!)
+    }
+    
+    
     @IBAction func pickFileInSheet(_ sender: Any) {
         Manager.shared.pickFile(from:self.view.window!)
     }

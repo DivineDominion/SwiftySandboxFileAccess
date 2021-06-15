@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AppKit
 import SwiftySandboxFileAccess
 
 class Manager {
@@ -27,39 +28,57 @@ class Manager {
     
     func pickFile(from window:NSWindow){
         let access = SandboxFileAccess()
-        access.access(fileURL: urlToRequest,
+        access.access(fileURL: picturesURL,
                       fromWindow: window,
-                      persistPermission: true) {
-                        print("access the URL here")
+                      persistPermission: true) {url,_ in
+            print("access \(String(describing: url)) here")
+        }
+    }
+    
+    func accessDownloads(from window:NSWindow){
+        let access = SandboxFileAccess()
+        access.access(fileURL: downloadURL,
+                      fromWindow: window,
+                      persistPermission: true) {url,_ in
+            print("access \(String(describing: url)) here")
         }
     }
     
     func pickFile() {
         let access = SandboxFileAccess()
-        let success = access.access(fileURL: urlToRequest,
-                                    askIfNecessary: true,
-                                    persistPermission: true) {
-                                        print("access the URL here")
+        access.access(fileURL: picturesURL,
+                      askIfNecessary: true,
+                      persistPermission: true) {url,_ in
+            print("access \(String(describing: url)) here")
+            print("success: \(url != nil)")
         }
-        print("success: \(success)")
+        
     }
     
     func checkAccessToLastDockDroppedPath() {
-        guard let lastOpenedPath = lastDockDroppedPath else {
+        guard let lastOpenedPath = lastDockDroppedPath  else {
             return
         }
         
-        let access = SandboxFileAccess()
-        let success = access.access(path: lastOpenedPath,
-                                       askIfNecessary: false)
+        let lastOpenedURL = URL(fileURLWithPath: lastOpenedPath)
         
-        print("access status : \(success)")
+        let access = SandboxFileAccess()
+        access.access(fileURL: lastOpenedURL,
+                                    askIfNecessary: false)  {url,_ in
+            print("success: \(url != nil)")
+        }
     }
     
     //MARK: Utilities
     
-    let urlToRequest:URL = {
+    
+    
+    let picturesURL:URL = {
         return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures")
+    }()
+    
+    let downloadURL:URL = {
+        return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Downloads")
     }()
     
     

@@ -3,22 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		732496575AF520858E47316B /* Pods_SwiftySandboxDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8774BF0BE09A6DE9F279DA5B /* Pods_SwiftySandboxDemo.framework */; };
 		D419ADF824850EB6009B580B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF724850EB6009B580B /* AppDelegate.swift */; };
 		D419ADFA24850EB6009B580B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF924850EB6009B580B /* ViewController.swift */; };
 		D419ADFC24850EB7009B580B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFB24850EB7009B580B /* Assets.xcassets */; };
 		D419ADFF24850EB7009B580B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFD24850EB7009B580B /* Main.storyboard */; };
 		D419AE0824851151009B580B /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419AE0724851151009B580B /* Manager.swift */; };
+		D495A7262678ECF4002555D4 /* SwiftySandboxFileAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		58F933119575D92676D7774C /* Pods-SwiftySandboxDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftySandboxDemo.release.xcconfig"; path = "Target Support Files/Pods-SwiftySandboxDemo/Pods-SwiftySandboxDemo.release.xcconfig"; sourceTree = "<group>"; };
-		5C9F469C041AE5E6A8F922B5 /* Pods-SwiftySandboxDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftySandboxDemo.debug.xcconfig"; path = "Target Support Files/Pods-SwiftySandboxDemo/Pods-SwiftySandboxDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		8774BF0BE09A6DE9F279DA5B /* Pods_SwiftySandboxDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftySandboxDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D419ADF424850EB6009B580B /* SwiftySandboxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftySandboxDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D419ADF724850EB6009B580B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D419ADF924850EB6009B580B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -34,7 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				732496575AF520858E47316B /* Pods_SwiftySandboxDemo.framework in Frameworks */,
+				D495A7262678ECF4002555D4 /* SwiftySandboxFileAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,18 +41,8 @@
 		1039AF53A9D5F7F504580F42 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5C9F469C041AE5E6A8F922B5 /* Pods-SwiftySandboxDemo.debug.xcconfig */,
-				58F933119575D92676D7774C /* Pods-SwiftySandboxDemo.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		6262205049BACF07382C286D /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8774BF0BE09A6DE9F279DA5B /* Pods_SwiftySandboxDemo.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D419ADEB24850EB6009B580B = {
@@ -64,7 +51,6 @@
 				D419ADF624850EB6009B580B /* SwiftySandboxDemo */,
 				D419ADF524850EB6009B580B /* Products */,
 				1039AF53A9D5F7F504580F42 /* Pods */,
-				6262205049BACF07382C286D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,17 +83,18 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D419AE0424850EB7009B580B /* Build configuration list for PBXNativeTarget "SwiftySandboxDemo" */;
 			buildPhases = (
-				BE3E2DE30F00C8D392F61BDE /* [CP] Check Pods Manifest.lock */,
 				D419ADF024850EB6009B580B /* Sources */,
 				D419ADF124850EB6009B580B /* Frameworks */,
 				D419ADF224850EB6009B580B /* Resources */,
-				F7F1C1329411E0BA65BD0473 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = SwiftySandboxDemo;
+			packageProductDependencies = (
+				D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */,
+			);
 			productName = SwiftySandboxDemo;
 			productReference = D419ADF424850EB6009B580B /* SwiftySandboxDemo.app */;
 			productType = "com.apple.product-type.application";
@@ -136,6 +123,9 @@
 				Base,
 			);
 			mainGroup = D419ADEB24850EB6009B580B;
+			packageReferences = (
+				D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */,
+			);
 			productRefGroup = D419ADF524850EB6009B580B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -156,48 +146,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		BE3E2DE30F00C8D392F61BDE /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SwiftySandboxDemo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F7F1C1329411E0BA65BD0473 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SwiftySandboxDemo/Pods-SwiftySandboxDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SwiftySandboxDemo/Pods-SwiftySandboxDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwiftySandboxDemo/Pods-SwiftySandboxDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D419ADF024850EB6009B580B /* Sources */ = {
@@ -339,7 +287,6 @@
 		};
 		D419AE0524850EB7009B580B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C9F469C041AE5E6A8F922B5 /* Pods-SwiftySandboxDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SwiftySandboxDemo/SwiftySandboxDemo.entitlements;
@@ -361,7 +308,6 @@
 		};
 		D419AE0624850EB7009B580B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 58F933119575D92676D7774C /* Pods-SwiftySandboxDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SwiftySandboxDemo/SwiftySandboxDemo.entitlements;
@@ -403,6 +349,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "file:///Users/rob/Documents/Development/Mac/Packages/SwiftySandboxFileAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */;
+			productName = SwiftySandboxFileAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D419ADEC24850EB6009B580B /* Project object */;
 }
