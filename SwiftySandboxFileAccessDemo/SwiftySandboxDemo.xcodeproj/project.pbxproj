@@ -3,19 +3,24 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D415487026790E7400B304A5 /* SandboxFileAccessPersist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */; };
+		D415487126790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */; };
+		D415487226790E7400B304A5 /* SandboxFileAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486F26790E7400B304A5 /* SandboxFileAccess.swift */; };
 		D419ADF824850EB6009B580B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF724850EB6009B580B /* AppDelegate.swift */; };
 		D419ADFA24850EB6009B580B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF924850EB6009B580B /* ViewController.swift */; };
 		D419ADFC24850EB7009B580B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFB24850EB7009B580B /* Assets.xcassets */; };
 		D419ADFF24850EB7009B580B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFD24850EB7009B580B /* Main.storyboard */; };
 		D419AE0824851151009B580B /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419AE0724851151009B580B /* Manager.swift */; };
-		D495A7262678ECF4002555D4 /* SwiftySandboxFileAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessPersist.swift; sourceTree = "<group>"; };
+		D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessOpenSavePanelDelegate.swift; sourceTree = "<group>"; };
+		D415486F26790E7400B304A5 /* SandboxFileAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccess.swift; sourceTree = "<group>"; };
 		D419ADF424850EB6009B580B /* SwiftySandboxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftySandboxDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D419ADF724850EB6009B580B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D419ADF924850EB6009B580B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -31,7 +36,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D495A7262678ECF4002555D4 /* SwiftySandboxFileAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +47,17 @@
 			children = (
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		D415486C26790E7400B304A5 /* SwiftySandboxFileAccess */ = {
+			isa = PBXGroup;
+			children = (
+				D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */,
+				D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */,
+				D415486F26790E7400B304A5 /* SandboxFileAccess.swift */,
+			);
+			name = SwiftySandboxFileAccess;
+			path = ../../Sources/SwiftySandboxFileAccess;
 			sourceTree = "<group>";
 		};
 		D419ADEB24850EB6009B580B = {
@@ -65,6 +80,7 @@
 		D419ADF624850EB6009B580B /* SwiftySandboxDemo */ = {
 			isa = PBXGroup;
 			children = (
+				D415486C26790E7400B304A5 /* SwiftySandboxFileAccess */,
 				D419AE0724851151009B580B /* Manager.swift */,
 				D419ADF724850EB6009B580B /* AppDelegate.swift */,
 				D419ADF924850EB6009B580B /* ViewController.swift */,
@@ -93,7 +109,6 @@
 			);
 			name = SwiftySandboxDemo;
 			packageProductDependencies = (
-				D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */,
 			);
 			productName = SwiftySandboxDemo;
 			productReference = D419ADF424850EB6009B580B /* SwiftySandboxDemo.app */;
@@ -111,6 +126,7 @@
 				TargetAttributes = {
 					D419ADF324850EB6009B580B = {
 						CreatedOnToolsVersion = 11.5;
+						LastSwiftMigration = 1250;
 					};
 				};
 			};
@@ -124,7 +140,6 @@
 			);
 			mainGroup = D419ADEB24850EB6009B580B;
 			packageReferences = (
-				D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */,
 			);
 			productRefGroup = D419ADF524850EB6009B580B /* Products */;
 			projectDirPath = "";
@@ -152,8 +167,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D415487026790E7400B304A5 /* SandboxFileAccessPersist.swift in Sources */,
+				D415487226790E7400B304A5 /* SandboxFileAccess.swift in Sources */,
 				D419ADFA24850EB6009B580B /* ViewController.swift in Sources */,
 				D419AE0824851151009B580B /* Manager.swift in Sources */,
+				D415487126790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */,
 				D419ADF824850EB6009B580B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,6 +307,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SwiftySandboxDemo/SwiftySandboxDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -302,6 +321,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.HobbyistSoftware.SwiftySandboxDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -310,6 +330,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SwiftySandboxDemo/SwiftySandboxDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -349,25 +370,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "file:///Users/rob/Documents/Development/Mac/Packages/SwiftySandboxFileAccess";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D495A7252678ECF4002555D4 /* SwiftySandboxFileAccess */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D495A7242678ECF4002555D4 /* XCRemoteSwiftPackageReference "SwiftySandboxFileAccess" */;
-			productName = SwiftySandboxFileAccess;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D419ADEC24850EB6009B580B /* Project object */;
 }

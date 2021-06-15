@@ -8,7 +8,12 @@
 
 import Foundation
 import AppKit
-import SwiftySandboxFileAccess
+
+class Test {
+    class func isAccessible(fromSandbox path: String?) -> Bool {
+        return access((path as NSString?)?.fileSystemRepresentation, R_OK) == 0
+    }
+}
 
 class Manager {
     static let shared = Manager()
@@ -29,17 +34,17 @@ class Manager {
     func pickFile(from window:NSWindow){
         let access = SandboxFileAccess()
         access.access(fileURL: picturesURL,
-                      fromWindow: window,
-                      persistPermission: true) {url,_ in
+                      fromWindow: window) {url,_ in
             print("access \(String(describing: url)) here")
         }
     }
     
     func accessDownloads(from window:NSWindow){
+
         let access = SandboxFileAccess()
         access.access(fileURL: downloadURL,
-                      fromWindow: window,
-                      persistPermission: true) {url,_ in
+                      askIfNecessary: false,
+                      fromWindow: window) {url,_ in
             print("access \(String(describing: url)) here")
         }
     }
@@ -47,8 +52,7 @@ class Manager {
     func pickFile() {
         let access = SandboxFileAccess()
         access.access(fileURL: picturesURL,
-                      askIfNecessary: true,
-                      persistPermission: true) {url,_ in
+                      askIfNecessary: true) {url,_ in
             print("access \(String(describing: url)) here")
             print("success: \(url != nil)")
         }
