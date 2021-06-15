@@ -56,10 +56,11 @@ open class SandboxFileAccess {
         
     }
     
-    /// Check whether we have access to a given file synchronously. Note - this
+    /// Check whether we have access to a given file synchronously.
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
+    /// - Parameter readonly: if readonly is true, then the powerbox access checks readonly access (e.g. for a readonly entitlement)
     /// - Returns: true if we already have valid persisted permission to access the given file
-    public func canAccess(fileURL:URL) -> Bool {
+    public func canAccess(fileURL:URL, readonly:Bool = true) -> Bool {
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
@@ -70,21 +71,24 @@ open class SandboxFileAccess {
             return true
         }
         
-        return false
+        return powerboxAllowsAccess(forFileURL: fileURL, readonly: readonly)
     }
     
     
     
-    /// Request permission for file - but if user is asked, then present file panel as sheet
+    /// Access a file, requesting permission if needed
+    /// If the file is accessible through a stored bookmark, then start/stop AccessingSecurityScopedResource is called around the block
     ///
     /// - Parameters:
     ///   - fileURL: required URL
+    ///   - readonly: if readonly is true, then the powerbox access checks readonly access (e.g. for a readonly entitlement)
     ///   - askIfNecessary: whether to ask the user for permission
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
     ///   - block: block called with url and bookmark data that you can access.
-    ///   Note the returned url may be a parent of the url you requested
+    ///   Note that the returned url may be a parent of the url you requested
     public func access(fileURL: URL,
+                       readonly:Bool = true,
                        askIfNecessary:Bool = true,
                        fromWindow:NSWindow? = nil,
                        persistPermission persist: Bool = true,
@@ -97,8 +101,17 @@ open class SandboxFileAccess {
         
         // if url is stored, then we'll get a url and bookmark data. We can exit here.
         if let storedURL = allowedURL {
-            block(storedURL,bookmarkData)
+            secureAccess(securityScopedFileURL: storedURL, bookmarkData: bookmarkData, block: block)
             return
+        }
+        
+        if !persist || !askIfNecessary {
+            //we're either not saving our permission, or we're not willing to ask
+            //in this case - powerbox access is good enough
+            if powerboxAllowsAccess(forFileURL: fileURL, readonly: readonly) {
+                block(fileURL,nil)
+                return
+            }
         }
         
  
@@ -110,34 +123,38 @@ open class SandboxFileAccess {
             return
         }
         
-        if let fromWindow = fromWindow {
-            askPermission(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
-                var bookmarkData: Data? = nil
-                // if we have no bookmark data and we want to persist, we need to create it
-                if let url = url, persist == true {
-                    bookmarkData = self.persistPermission(url: url)
-                }
-                
-                block(url, bookmarkData)
-            }
+        guard let fromWindow = fromWindow else {
+            print("ERROR: Unable to ask permission in swiftySandboxFileAccess as no window has been given")
+            block(nil, nil)
+            return
         }
-        else {
+
+        askPermissionWithSheet(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
             var bookmarkData: Data? = nil
-            
-            // ask permission. Exit if we don't get it
-            guard let confirmedAllowedURL = askPermission(for: standardisedFileURL) else {
-                block(nil, nil)
-                return
-            }
-            
             // if we have no bookmark data and we want to persist, we need to create it
-            if persist == true {
-                bookmarkData = persistPermission(url: confirmedAllowedURL)
+            if let url = url, persist == true {
+                bookmarkData = self.persistPermission(url: url)
             }
             
-            block(confirmedAllowedURL, bookmarkData)
+            block(url, bookmarkData)
+        }
+
+    }
+    
+    private func secureAccess(securityScopedFileURL:URL?, bookmarkData:Data?, block: @escaping SandboxFileSecurityScopeBlock) {
+        
+        guard let securityScopedFileURL = securityScopedFileURL else {
+            block(nil,nil)
+            return
         }
         
+        if (securityScopedFileURL.startAccessingSecurityScopedResource() == true) {
+            block(securityScopedFileURL,bookmarkData)
+            securityScopedFileURL.stopAccessingSecurityScopedResource()
+        }
+        else {
+            block(nil,nil)
+        }
         
     }
 
@@ -166,6 +183,12 @@ open class SandboxFileAccess {
     }
     
     //MARK: Utility methods
+    
+    func powerboxAllowsAccess(forFileURL fileURL:URL,readonly:Bool = true) -> Bool {
+        let permission:Int32 = readonly ? R_OK : (R_OK | W_OK)
+        let path = fileURL.path as NSString
+        return Darwin.access(path.fileSystemRepresentation, permission) == 0
+    }
     
     private func defaultOpenPanelMessage(forFileURL fileURL:URL) -> String {
         let applicationName = (Bundle.main[.displayName] as? String)
@@ -246,36 +269,9 @@ open class SandboxFileAccess {
         return (openPanel,openPanelDelegate)
     }
     
-    private func askPermission(for url: URL) -> URL? {
-        let requestedURL = url
-        
-        // this url will be the url allowed, it might be a parent url of the url passed in
-        var allowedURL: URL? = nil
-        
-        // display the open panel
-        let displayOpenPanelBlock = {
-            let (openPanel,openPanelDelegate) = self.openPanel(for: requestedURL)
-            
-            NSApplication.shared.activate(ignoringOtherApps: true)
-            let openPanelButtonPressed = openPanel.runModal().rawValue
-            if openPanelButtonPressed == NSFileHandlingPanelOKButton {
-                allowedURL = openPanel.url
-            }
-            
-            //use anonymous assignment to ensure that openPanelDelegate is retained
-            _ = openPanelDelegate
-        }
-        if Thread.isMainThread {
-            displayOpenPanelBlock()
-        } else {
-            DispatchQueue.main.sync(execute: displayOpenPanelBlock)
-        }
-        
-        return allowedURL
-    }
+
     
-    
-    private func askPermission(for url: URL, fromWindow:NSWindow, with block: @escaping (URL?)->Void) {
+    private func askPermissionWithSheet(for url: URL, fromWindow:NSWindow, with block: @escaping (URL?)->Void) {
         let requestedURL = url
         
         // display the open panel
