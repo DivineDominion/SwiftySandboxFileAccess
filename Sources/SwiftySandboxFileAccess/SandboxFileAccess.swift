@@ -58,19 +58,7 @@ open class SandboxFileAccess {
         
     }
     
-    /// Access a file path to read or write, automatically gaining permission from the user with NSOpenPanel if required and using persisted permissions if possible.
-    ///
-    /// - Parameters:
-    ///   - path: path A file path, either a file or folder, that the caller needs access to.
-    ///   - askIfNecessary: whether to ask the user for permission
-    ///   - persist: persist If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder. Within this block - startAccessingSecurityScopedResource has already been called
-    /// - Returns: true if permission was granted or already available, false otherwise.
-    public func access(path: String, askIfNecessary:Bool = true,
-                       persistPermission persist: Bool = true, with block: SandboxFileAccessBlock? = nil) -> Bool {
-        let fileURL = URL(fileURLWithPath: path)
-        return access(fileURL: fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: block)
-    }
+
     
 
     /// Access a file URL to read or write, automatically gaining permission from the user with NSOpenPanel if required and using persisted permissions if possible.
@@ -97,18 +85,7 @@ open class SandboxFileAccess {
         return success
     }
     
-    /// Similar to accessFileURL - but if permission is required, the open panel is presented as a sheet on fromWindow
-    ///
-    /// - Parameters:
-    ///   - filePath: path A file path, either a file or folder, that the caller needs access to.
-    ///   - fromWindow: The window from which to present the sheet
-    ///   - persist: persist If YES will save the permission for future calls.
-    ///   - block: The block that will be given access to the file or folder.  Within this block - startAccessingSecurityScopedResource has already been called
-    public func access(path: String,fromWindow:NSWindow, persistPermission persist: Bool = true, with block:SandboxFileAccessBlock? = nil) {
-        
-        let fileURL = URL(fileURLWithPath: path)
-        access(fileURL: fileURL, fromWindow: fromWindow, persistPermission: persist, with: block)
-    }
+
     
     /// Similar to accessFileURL - but if permission is required, the open panel is presented as a sheet on fromWindow
     ///
@@ -130,23 +107,6 @@ open class SandboxFileAccess {
                 securityScopedFileURL.stopAccessingSecurityScopedResource()
             }
         }
-    }
-    
-
-
-    /// Request access permission for a file path to read or write, automatically with NSOpenPanel if required  and using persisted permissions if possible.
-    /// startAccessingSecurityScopedResource is NOT autmatically called
-    ///
-    /// - Parameters:
-    ///   - filePath: A file path, either a file or folder, that the caller needs access to.
-    ///   - askIfNecessary: whether to ask the user for permission
-    ///   - persist: If YES will save the permission for future calls.
-    ///   - block: block is called if permission is allowed.
-    /// - Returns: YES if permission was granted or already available, NO otherwise.
-    public func requestPermissions(forFilePath filePath: String, askIfNecessary:Bool = true, persistPermission persist: Bool, with block: SandboxFileSecurityScopeBlock? = nil) -> Bool {
-        
-        let fileURL = URL(fileURLWithPath: filePath)
-        return requestPermissions(forFileURL: fileURL, askIfNecessary:askIfNecessary, persistPermission: persist, with: block)
     }
     
 
@@ -215,19 +175,7 @@ open class SandboxFileAccess {
         return true
     }
     
-    /// Request permission for file - but if user is asked, then present file panel as sheet
-    /// startAccessingSecurityScopedResource is NOT autmatically called
-    ///
-    /// - Parameters:
-    ///   - fileURL: required URL
-    ///   - fromWindow: window to present sheet on
-    ///   - persist: whether to persist the permission
-    ///   - block: block called with url and bookmark data if available
-    public func requestPermissions(forFilePath filePath: String, fromWindow:NSWindow, persistPermission persist: Bool = true, with block: @escaping SandboxFileSecurityScopeBlock) {
-        
-        let fileURL = URL(fileURLWithPath: filePath)
-        requestPermissions(forFileURL: fileURL, fromWindow: fromWindow, persistPermission: persist, with: block)
-    }
+
     
     
     /// Request permission for file - but if user is asked, then present file panel as sheet
@@ -263,15 +211,6 @@ open class SandboxFileAccess {
         }
     }
     
-
-    /// Persist a security bookmark for the given path. The calling application must already have permission.
-    ///
-    /// - Parameter path: The path with permission that will be persisted.
-    /// - Returns: Bookmark data if permission was granted or already available, nil otherwise.
-    public func persistPermission(path: String) -> Data? {
-
-        return persistPermission(url: URL(fileURLWithPath: path))
-    }
     
 
     /// Persist a security bookmark for the given URL. The calling application must already have permission.
