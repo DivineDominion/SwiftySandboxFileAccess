@@ -56,10 +56,10 @@ open class SandboxFileAccess {
         
     }
     
-    /// Check whether we have access to a given file synchronously
+    /// Check whether we have access to a given file synchronously. Note - this
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
-    /// - Returns: true if we already have permission to access the given file
-    public func isAllowedToAccess(fileURL:URL) -> Bool {
+    /// - Returns: true if we already have valid persisted permission to access the given file
+    public func canAccess(fileURL:URL) -> Bool {
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
@@ -82,7 +82,8 @@ open class SandboxFileAccess {
     ///   - askIfNecessary: whether to ask the user for permission
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
-    ///   - block: block called with url and bookmark data if available
+    ///   - block: block called with url and bookmark data that you can access.
+    ///   Note the returned url may be a parent of the url you requested
     public func access(fileURL: URL,
                        askIfNecessary:Bool = true,
                        fromWindow:NSWindow? = nil,
@@ -139,8 +140,7 @@ open class SandboxFileAccess {
         
         
     }
-    
-    
+
     
     /// Persist a security bookmark for the given URL. The calling application must already have permission.
     

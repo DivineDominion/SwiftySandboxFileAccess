@@ -1,14 +1,14 @@
 SwiftySandboxFileAccess
 ====================
 
-This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a more swifty API and a handful of additional features.
+This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a simpler more swifty API and a handful of additional features.
 
 Details
 ====================
 
 A simple class that wraps up writing and accessing files outside a Mac apps App Sandbox files. The class will request permission from the user with a simple to understand dialog consistent with Apple's documentation and persist permissions across application runs using security bookmarks.
 
-This is specifically useful for when you need to write files, or gain access to directories that are not already accessible to your application. For example if your application is introduced to file AwesomeRecipe.txt and wishes to generate AwesomeRecipe.txt.gz, this is not possible without gaining permission from the user. (Note: It is possible to write AwesomeRecipe.gz, you don't need this class to do that.)
+This is specifically useful for when you need to write files, or gain access to directories that are not already accessible to your application. 
 
 When using this class, if the user needs to give permission to access the folder, the NSOpenPanel is used to request permission. Only the path or file requiring permission, or parent paths are selectable in the NSOpenPanel. The panel text, title and button are customisable.
 ![](Screenshots/screenshot-1.png)
@@ -22,14 +22,7 @@ How to Use
 
 Standard drill!
 
-### CocoaPods (deprecated!)
-
-
-```ruby
-pod 'SwiftySandboxFileAccess'
-```
-
-I won't be publishing podspec updates any more.
+### CocoaPods (deprecated - stuck on v 2!)
 
 ###  Entitlements:
 
@@ -41,97 +34,37 @@ In Xcode click on your project file, then the Capabilities tab. Turn on App Sand
 Main Function Groups
 ====================
 
-All functions have url or path variants. This shows only the url variants.
+Version 3.0 dramatically simplifies the API
 
-### `persistPermission(url:) -> Data?`
+All functions take a file URL
+
+
+### Save permission
+
+`persistPermission(url:) -> Data?`
 
 Saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
 
-### `requestPermissions(forFileURL:askIfNecessary:persistPermission:with:) -> Bool`
 
-Request permission to access a file. 
+### Check whether you can access a file
 
-You can set `askIfNecessary` to `false` to check whether you have access without interrupting the user.
+`isAllowedToAccess(fileURL:URL) -> Bool`
 
-### `requestPermissions(forFilePath:fromWindow:persistPermission:with:) -> Bool`
-
-Request permission to access a file at `fileURL`. If needed, the open panel will be presented as a sheet from the given window.
-
-### `access(fileURL:askIfNecessary:persistPermission:with:) -> Bool`
-
-Same as the `requestPermission(...)` variants - but within the block, `startAccessingSecurityScopedResource` has already been called.
+Returns whether we can currently access the fileURL
 
 
-Example
-=======
 
-In your application, whenever you need to read or write a file, wrap the code accessing the file wrap like the following. The following example will get permission to access the parent directory of a file the application already knows about.
+### Access a file
 
-```swift
-import SwiftySandboxFileAccess
+	access(fileURL: URL,
+	       askIfNecessary:Bool = true,
+	       fromWindow:NSWindow? = nil,
+	       persistPermission persist: Bool = true,
+	       with block: @escaping SandboxFileSecurityScopeBlock)`
 
-class Manager {
-    static let shared = Manager()
-    
-    /// Persist URL when a file is dropped on the dock (so permission is implicitly given)
-    func persist(_ urls:[URL]){
-        let access = SandboxFileAccess()
-        for url in urls {
-            _ = access.persistPermission(url:url)
-            lastDockDroppedPath = url.path
-        }
-    }
-    
-    func clearStoredPermissions() {
-        SandboxFileAccessPersist.deleteAllBookmarkData()
-    }
-    
-    func pickFile(from window:NSWindow){
-        let access = SandboxFileAccess()
-        access.access(fileURL: urlToRequest,
-                      fromWindow: window,
-                      persistPermission: true) {
-                        print("access the URL here")
-        }
-    }
-    
-    func pickFile() {
-        let access = SandboxFileAccess()
-        let success = access.access(fileURL: urlToRequest,
-                                    askIfNecessary: true,
-                                    persistPermission: true) {
-                                        print("access the URL here")
-        }
-        print("success: \(success)")
-    }
-    
-    func checkAccessToLastDockDroppedPath() {
-        guard let lastOpenedPath = lastDockDroppedPath else {
-            return
-        }
-        
-        let access = SandboxFileAccess()
-        let success = access.access(path: lastOpenedPath,
-                                       askIfNecessary: false)
-        
-        print("access status : \(success)")
-    }
-    
-	//see file in demo for utility details
-}
+Use this block to asynchronously access your file.
 
-```
-
-
-Upgrading from AppSandboxFileAccess
-=======
-
-All the functionality from the old version is still here - though the function names may have changed slightly
-
-1. Change your podfile to point to the new version
-1. Change your import declarations to import SwiftySandboxFileAccess
-1. Build, find any errors and update function calls as necessary
-1. (optional) Replace instances of `AppSandboxFileAccess` with `SandboxFileAccess`
+If set, this will ask permission, and present the file picker from window (if given)
 
 
 
