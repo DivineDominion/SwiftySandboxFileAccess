@@ -29,6 +29,15 @@ extension Bundle {
     }
 }
 
+public enum AskConditions {
+    case never
+    //even if powerbox allows access to the file, we'll ask permission explicitly (which allows it to be stored
+    case ifBookmarkNotStored
+    //if permission isn't stored - but powerbox allows readonly - we're good with that
+    case ifRequiredForReadonly
+    //if permission isn't stored - but powerbox allows readwrite - we're good with that
+    case ifRequiredForReadWrite
+}
 
 
 open class SandboxFileAccess {
@@ -58,9 +67,9 @@ open class SandboxFileAccess {
     
     /// Check whether we have access to a given file synchronously.
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
-    /// - Parameter readonly: if readonly is true, then the powerbox access checks readonly access (e.g. for a readonly entitlement)
+    /// - Parameter acceptingPowerboxAccess: if set to .readonly, or .readwrite, then we accept permission granted by powerbox which isn't stored
     /// - Returns: true if we already have valid persisted permission to access the given file
-    public func canAccess(fileURL:URL, readonly:Bool = true) -> Bool {
+    public func canAccess(fileURL:URL, acceptingPowerboxAccess:PowerboxAccessMode? = nil) -> Bool {
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
@@ -71,7 +80,11 @@ open class SandboxFileAccess {
             return true
         }
         
-        return powerboxAllowsAccess(forFileURL: fileURL, readonly: readonly)
+        if let acceptingPowerboxAccess = acceptingPowerboxAccess {
+            return Powerbox.allowsAccess(forFileURL: fileURL, mode: acceptingPowerboxAccess)
+        }
+        
+        return false
     }
     
     
@@ -81,15 +94,13 @@ open class SandboxFileAccess {
     ///
     /// - Parameters:
     ///   - fileURL: required URL
-    ///   - readonly: if readonly is true, then the powerbox access checks readonly access (e.g. for a readonly entitlement)
     ///   - askIfNecessary: whether to ask the user for permission
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
     ///   - block: block called with url and bookmark data that you can access.
     ///   Note that the returned url may be a parent of the url you requested
     public func access(fileURL: URL,
-                       readonly:Bool = true,
-                       askIfNecessary:Bool = true,
+                       askIfNecessary:AskConditions = .ifBookmarkNotStored,
                        fromWindow:NSWindow? = nil,
                        persistPermission persist: Bool = true,
                        with block: @escaping SandboxFileSecurityScopeBlock) {
@@ -105,23 +116,29 @@ open class SandboxFileAccess {
             return
         }
         
-        if !persist || !askIfNecessary {
-            //we're either not saving our permission, or we're not willing to ask
-            //in this case - powerbox access is good enough
-            if powerboxAllowsAccess(forFileURL: fileURL, readonly: readonly) {
+        
+        //we don't have a stored permission, so now it depends on our askIfNecessary settings
+        
+        switch askIfNecessary {
+            case .never:
+                //we're not allowed to ask
+                block(nil, nil)
+                return
+        case .ifBookmarkNotStored:
+            break
+        case .ifRequiredForReadonly:
+            if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readonly) {
+                block(fileURL,nil)
+                return
+            }
+        case .ifRequiredForReadWrite:
+            if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readwrite) {
                 block(fileURL,nil)
                 return
             }
         }
         
- 
-        // we need to ask the user for permission
-        
-        //but we're not allowed to ask
-        if !askIfNecessary {
-            block(nil, nil)
-            return
-        }
+        //continuing means we don't have what we want and we're willing to ask
         
         guard let fromWindow = fromWindow else {
             print("ERROR: Unable to ask permission in swiftySandboxFileAccess as no window has been given")
@@ -184,11 +201,7 @@ open class SandboxFileAccess {
     
     //MARK: Utility methods
     
-    func powerboxAllowsAccess(forFileURL fileURL:URL,readonly:Bool = true) -> Bool {
-        let permission:Int32 = readonly ? R_OK : (R_OK | W_OK)
-        let path = fileURL.path as NSString
-        return Darwin.access(path.fileSystemRepresentation, permission) == 0
-    }
+
     
     private func defaultOpenPanelMessage(forFileURL fileURL:URL) -> String {
         let applicationName = (Bundle.main[.displayName] as? String)

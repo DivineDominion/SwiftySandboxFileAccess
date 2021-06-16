@@ -38,6 +38,8 @@ Version 3.0 dramatically simplifies the API
 
 All functions take a file URL
 
+use  `SandboxFileAccess().someFunction`
+
 
 ### Save permission
 
@@ -59,12 +61,12 @@ Returns whether we can currently access the fileURL
 	access(fileURL: URL,
 	       askIfNecessary:Bool = true,
 	       fromWindow:NSWindow? = nil,
-	       persistPermission persist: Bool = true,
+             askIfNecessary:AskConditions = .ifBookmarkNotStored,
 	       with block: @escaping SandboxFileSecurityScopeBlock)`
 
 Use this block to asynchronously access your file.
 
-If set, this will ask permission, and present the file picker from window (if given)
+NB: askIfNecessary will by default ask permission for any file where there isn't a stored bookmark - even if powerbox already grants access to the file. If you only care about access now, then you can use `.ifRequiredForReadonly` or `.ifRequiredForReadWrite`
 
 
 
