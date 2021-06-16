@@ -199,6 +199,14 @@ open class SandboxFileAccess {
         return bookmarkData
     }
     
+    /// Quickly persist multiple URLs. Useful with openPanel responses
+    /// - Parameter urls: urls to persist
+    public func persistPermissions(urls:[URL]) {
+        for url in urls {
+            _ = persistPermission(url: url)
+        }
+    }
+    
     //MARK: Utility methods
     
 
