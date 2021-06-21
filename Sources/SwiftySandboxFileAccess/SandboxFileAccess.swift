@@ -29,6 +29,8 @@ extension Bundle {
 
 open class SandboxFileAccess {
     
+    // MARK:  UI Customisation for file panel
+    
     /// The title of the NSOpenPanel displayed when asking permission to access a file. Default: "Allow Access"
     open var title:String = {NSLocalizedString("Allow Access", comment: "Sandbox Access panel title.")}()
     
@@ -39,6 +41,7 @@ open class SandboxFileAccess {
     /// The prompt button on the the NSOpenPanel displayed when asking permission to access a file.
     open var prompt:String = {NSLocalizedString("Allow", comment: "Sandbox Access panel prompt.")}()
     
+    // MARK:  Bookmark management
     
     /// This is an optional delegate object that can be provided to customize the persistance of bookmark data (e.g. in a Core Data database).
     public weak var bookmarkPersistanceDelegate: SandboxFileAccessProtocol?
@@ -48,6 +51,8 @@ open class SandboxFileAccess {
         return bookmarkPersistanceDelegate ?? defaultDelegate
     }
     
+    // MARK:  Failure codes
+    
     public enum Fail:Error {
         case needToAskPermission(AccessInfo)
         case noWindowProvided(AccessInfo)
@@ -55,33 +60,23 @@ open class SandboxFileAccess {
         case unexpectedlyUnableToAccessBookmark(AccessInfo)
     }
     
+    // MARK:  Implementation
+    
     public init() {
         
     }
     
     /// Check whether we have access to a given file synchronously.
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
-    /// - Parameter acceptingPowerboxAccess: if set to .readonly, or .readwrite, then we accept permission granted by powerbox which isn't stored
-    /// - Returns: true if we already have valid persisted permission to access the given file
-    public func canAccess(fileURL:URL, acceptingPowerboxAccess:PowerboxAccessMode? = nil) -> Bool {
-        // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
-        let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
+    ///   - acceptablePermission: an optionlist of acceptable permissions. If _ANY_ of the acceptablePermission are met, then the function returns true
+    /// - Returns: true if we have permission to access the given file
+    public func canAccess(fileURL:URL, acceptablePermission:Permissions) -> Bool {
         
-        let (allowedURL,_) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
-        
-        // if url is stored, then we'll get a url and bookmark data.
-        if allowedURL != nil {
-            return true
-        }
-        
-        if let acceptingPowerboxAccess = acceptingPowerboxAccess {
-            return Powerbox.allowsAccess(forFileURL: fileURL, mode: acceptingPowerboxAccess)
-        }
-        
-        return false
+        let info = accessInfo(forFileURL: fileURL)
+        return info.permissions.meets(required: acceptablePermission)
     }
     
-    public func permissions(forFileURL fileURL:URL) -> AccessInfo {
+    public func accessInfo(forFileURL fileURL:URL) -> AccessInfo {
         // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
         let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
@@ -106,30 +101,51 @@ open class SandboxFileAccess {
                           permissions: permissions)
     }
     
-    
+    /// Provides synchronous access if the required permissions are available without asking
+    /// - Parameters:
+    ///   - fileURL: required URL
+    ///   - acceptablePermission: an optionlist of acceptable permissions.
+    ///   If _ANY_ of the acceptablePermission are met, then the access procedes
+    ///   - block: block called with  access info.
+    ///   Note that the returned url in accessInfo may be a parent of the url you requested
+    public func synchronouslyAccess(fileURL: URL,
+                       acceptablePermission:Permissions = .bookmark,
+                       with block: SandboxFileAccessBlock) {
+        
+        
+        let accessInfo = accessInfo(forFileURL: fileURL)
+        
+        if accessInfo.permissions.meets(required: acceptablePermission){
+            secureAccess(accessInfo: accessInfo, block: block)
+        }
+        else {
+            block(.failure(Fail.needToAskPermission(accessInfo)))
+        }
+
+    }
     
     /// Access a file, requesting permission if needed
     /// If the file is accessible through a stored bookmark, then start/stop AccessingSecurityScopedResource is called around the block
     ///
     /// - Parameters:
     ///   - fileURL: required URL
-    ///   - requiredPermission: an optionlist of acceptable permissions. If _ANY_ of the requiredPermissions are met, then the access procedes
+    ///   - acceptablePermission: an optionlist of acceptable permissions. If _ANY_ of the acceptablePermission are met, then the access procedes
     ///   - askIfNecessary: whether to ask the user for permission (requires window to be provided)
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
-    ///   - block: block called with url and bookmark data that you can access.
-    ///   Note that the returned url may be a parent of the url you requested
+    ///   - block: block called with  access info.
+    ///   Note that the returned url in accessInfo may be a parent of the url you requested
     public func access(fileURL: URL,
-                       requiredPermission:Permissions = .bookmark,
+                       acceptablePermission:Permissions = .bookmark,
                        askIfNecessary:Bool,
                        fromWindow:NSWindow? = nil,
                        persistPermission persist: Bool = true,
                        with block: @escaping SandboxFileAccessBlock) {
         
         
-        let accessInfo = permissions(forFileURL: fileURL)
+        let accessInfo = accessInfo(forFileURL: fileURL)
         
-        if accessInfo.permissions.meets(required: requiredPermission){
+        if accessInfo.permissions.meets(required: acceptablePermission){
             secureAccess(accessInfo: accessInfo, block: block)
             return
         }
@@ -159,7 +175,7 @@ open class SandboxFileAccess {
             }
             
             //update info with (potentially) new data
-            let accessInfo = self.permissions(forFileURL: fileURL)
+            let accessInfo = self.accessInfo(forFileURL: fileURL)
             self.secureAccess(accessInfo: accessInfo, block: block)
         }
 
@@ -170,7 +186,7 @@ open class SandboxFileAccess {
     /// - Parameters:
     ///   - accessInfo: info
     ///   - block: block to run
-    private func secureAccess(accessInfo:AccessInfo, block: @escaping SandboxFileAccessBlock) {
+    private func secureAccess(accessInfo:AccessInfo, block: SandboxFileAccessBlock) {
         
         guard let securityScopedFileURL = accessInfo.securityScopedURL else {
             //we don't have bookmark info - but we do meet the requirements, so just return with success

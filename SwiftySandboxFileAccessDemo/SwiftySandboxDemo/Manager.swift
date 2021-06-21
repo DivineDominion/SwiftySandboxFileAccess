@@ -34,7 +34,7 @@ class Manager {
     func pickFile(from window:NSWindow){
         let access = SandboxFileAccess()
         access.access(fileURL: picturesURL,
-                      requiredPermission: .anyReadOnly,
+                      acceptablePermission: .anyReadOnly,
                       askIfNecessary: true,
                       fromWindow: window) {result in
             if case .success(let info) = result {
@@ -49,7 +49,7 @@ class Manager {
 
         let access = SandboxFileAccess()
         access.access(fileURL: downloadURL,
-                      requiredPermission: .powerboxReadOnly,
+                      acceptablePermission: .powerboxReadOnly,
                       askIfNecessary: false) {result in
             if case .success = result {
                 print("access \(String(describing: self.downloadURL)) here")
