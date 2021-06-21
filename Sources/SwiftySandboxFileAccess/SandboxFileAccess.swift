@@ -100,31 +100,7 @@ open class SandboxFileAccess {
                           bookmarkData: bookmarkData,
                           permissions: permissions)
     }
-    
-    /// Provides synchronous access if the required permissions are available without asking
-    /// - Parameters:
-    ///   - fileURL: required URL
-    ///   - acceptablePermission: an optionlist of acceptable permissions.
-    ///   If _ANY_ of the acceptablePermission are met, then the access procedes
-    ///   - block: block called with  access info.
-    ///   Note that the returned url in accessInfo may be a parent of the url you requested
-    /// - Returns: the access result
-    public func synchronouslyAccess(fileURL: URL,
-                       acceptablePermission:Permissions = .bookmark,
-                       with block: SandboxFileAccessBlock) -> SandboxResult {
-        
-        
-        let accessInfo = accessInfo(forFileURL: fileURL)
-        
-        if accessInfo.permissions.meets(required: acceptablePermission){
-            return secureAccess(accessInfo: accessInfo, block: block)
-        }
-        else {
-            let result:SandboxResult = .failure(Fail.needToAskPermission(accessInfo))
-            block(result)
-            return result
-        }
-    }
+
     
     /// Access a file, requesting permission if needed
     /// If the file is accessible through a stored bookmark, then start/stop AccessingSecurityScopedResource is called around the block
@@ -181,6 +157,32 @@ open class SandboxFileAccess {
             _ = self.secureAccess(accessInfo: accessInfo, block: block)
         }
 
+    }
+    
+    
+    /// Provides synchronous access if the required permissions are available without asking
+    /// - Parameters:
+    ///   - fileURL: required URL
+    ///   - acceptablePermission: an optionlist of acceptable permissions.
+    ///   If _ANY_ of the acceptablePermission are met, then the access procedes
+    ///   - block: block called with  access info.
+    ///   Note that the returned url in accessInfo may be a parent of the url you requested
+    /// - Returns: the access result
+    public func synchronouslyAccess(fileURL: URL,
+                       acceptablePermission:Permissions = .bookmark,
+                       with block: SandboxFileAccessBlock) -> SandboxResult {
+        
+        
+        let accessInfo = accessInfo(forFileURL: fileURL)
+        
+        if accessInfo.permissions.meets(required: acceptablePermission){
+            return secureAccess(accessInfo: accessInfo, block: block)
+        }
+        else {
+            let result:SandboxResult = .failure(Fail.needToAskPermission(accessInfo))
+            block(result)
+            return result
+        }
     }
     
     /// If we have a bookmark, then do the security access dance around the block
