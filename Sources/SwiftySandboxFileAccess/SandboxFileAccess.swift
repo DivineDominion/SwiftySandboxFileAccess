@@ -70,8 +70,7 @@ open class SandboxFileAccess {
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
     ///   - acceptablePermission: an optionlist of acceptable permissions. If _ANY_ of the acceptablePermission are met, then the function returns true
     /// - Returns: true if we have permission to access the given file
-    public func canAccess(fileURL:URL, acceptablePermission:Permissions) -> Bool {
-        
+    public func canAccess(fileURL:URL, acceptablePermission:Permissions = .anyReadWrite) -> Bool {    
         let info = accessInfo(forFileURL: fileURL)
         return info.permissions.meets(required: acceptablePermission)
     }
