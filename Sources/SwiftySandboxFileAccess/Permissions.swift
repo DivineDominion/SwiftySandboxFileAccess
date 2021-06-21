@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Option set describing list of permissions required or available
 public struct Permissions: OptionSet {
     public let rawValue: Int
 

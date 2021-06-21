@@ -36,7 +36,6 @@ Main Function Groups
 
 Version 3.0 dramatically simplifies the API
 
-All functions take a file URL
 
 use  `SandboxFileAccess().someFunction`
 
@@ -48,27 +47,45 @@ use  `SandboxFileAccess().someFunction`
 Saves a permission which the app has recieved in some other way (dropped on dock, file open, etc)
 
 
-### Check whether you can access a file
-
-`isAllowedToAccess(fileURL:URL) -> Bool`
-
-Returns whether we can currently access the fileURL
-
-
-
 ### Access a file
 
-	access(fileURL: URL,
-	       askIfNecessary:Bool = true,
-	       fromWindow:NSWindow? = nil,
-             askIfNecessary:AskConditions = .ifBookmarkNotStored,
-	       with block: @escaping SandboxFileSecurityScopeBlock)`
+```
+access(fileURL: URL,
+                   acceptablePermission:Permissions = .bookmark,
+                   askIfNecessary:Bool,
+                   fromWindow:NSWindow? = nil,
+                   persistPermission persist: Bool = true,
+                   with block: @escaping SandboxFileAccessBlock)
+```
 
 Use this block to asynchronously access your file.
 
-NB: askIfNecessary will by default ask permission for any file where there isn't a stored bookmark - even if powerbox already grants access to the file. If you only care about access now, then you can use `.ifRequiredForReadonly` or `.ifRequiredForReadWrite`
+If any of the acceptable permissions are met, then the block is called with a  `.success` result
+
+acceptablePermission is .bookmark by default which means you'll only get `.success` if there is a stored bookmark -even if powerbox already grants access to the file
+
+If you only care about access now, then you can use `.anyReadOnly` or `.anyReadWrite`
+
+NB: The access info in the block shows the url of the bookmark _actually used_ to get access. This may be a parent of the url you need to use.
 
 
+### Check whether you can access a file
+
+`canAccess(fileURL:URL, acceptablePermission:Permissions = .anyReadWrite) -> Bool`
+
+Returns whether we can currently access the fileURL with the required permissions
+
+### Check what access you have to a file
+
+`accessInfo(forFileURL fileURL:URL) -> AccessInfo`
+
+### Synchronously Access a file if permission is already available (or stored)
+
+```
+synchronouslyAccess(fileURL: URL,
+                   acceptablePermission:Permissions = .bookmark,
+                   with block: SandboxFileAccessBlock) -> SandboxResult
+```
 
 License
 ====================

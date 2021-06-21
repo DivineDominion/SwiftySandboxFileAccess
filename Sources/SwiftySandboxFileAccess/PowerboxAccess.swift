@@ -21,6 +21,7 @@ public enum PowerboxAccessMode {
     }
 }
 
+/// Check whether powerbox allows access to the file without bookmarks
 public class Powerbox {
     static func allowsAccess(forFileURL fileURL:URL,mode:PowerboxAccessMode) -> Bool {
         let path = fileURL.path as NSString
