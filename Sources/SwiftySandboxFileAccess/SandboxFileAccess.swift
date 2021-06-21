@@ -1,11 +1,8 @@
 import AppKit
 
-//backwards compatibility with AppSandboxFileAccess
-public typealias AppSandboxFileAccess = SandboxFileAccess
-public typealias AppSandboxFileAccessProtocol = SandboxFileAccessProtocol
 
-public typealias SandboxFileAccessBlock = () -> Void
-public typealias SandboxFileSecurityScopeBlock = (URL?, Data?) -> Void
+
+public typealias SandboxFileAccessBlock = (Result<AccessInfo,Error>) -> Void
 
 
 public protocol SandboxFileAccessProtocol: AnyObject {
@@ -29,16 +26,6 @@ extension Bundle {
     }
 }
 
-public enum AskConditions {
-    case never
-    //even if powerbox allows access to the file, we'll ask permission explicitly (which allows it to be stored
-    case ifBookmarkNotStored
-    //if permission isn't stored - but powerbox allows readonly - we're good with that
-    case ifRequiredForReadonly
-    //if permission isn't stored - but powerbox allows readwrite - we're good with that
-    case ifRequiredForReadWrite
-}
-
 
 open class SandboxFileAccess {
     
@@ -59,6 +46,13 @@ open class SandboxFileAccess {
     private var defaultDelegate: SandboxFileAccessProtocol = SandboxFileAccessPersist()
     private var bookmarkPersistanceDelegateOrDefault:SandboxFileAccessProtocol {
         return bookmarkPersistanceDelegate ?? defaultDelegate
+    }
+    
+    public enum Fail:Error {
+        case needToAskPermission(AccessInfo)
+        case noWindowProvided(AccessInfo)
+        case userDidntGrantPermission(AccessInfo)
+        case unexpectedlyUnableToAccessBookmark(AccessInfo)
     }
     
     public init() {
@@ -87,6 +81,31 @@ open class SandboxFileAccess {
         return false
     }
     
+    public func permissions(forFileURL fileURL:URL) -> AccessInfo {
+        // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
+        let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
+        
+        var permissions = Permissions.none
+        
+        let (allowedURL,bookmarkData) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
+        // if url is stored, then we'll get a url and bookmark data.
+        if allowedURL != nil {
+            permissions.insert(.bookmark)
+        }
+        
+        if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readOnly) {
+            permissions.insert(.powerboxReadOnly)
+        }
+        
+        if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readWrite) {
+            permissions.insert(.powerboxReadWrite)
+        }
+        
+        return AccessInfo(securityScopedURL: allowedURL,
+                          bookmarkData: bookmarkData,
+                          permissions: permissions)
+    }
+    
     
     
     /// Access a file, requesting permission if needed
@@ -94,83 +113,79 @@ open class SandboxFileAccess {
     ///
     /// - Parameters:
     ///   - fileURL: required URL
-    ///   - askIfNecessary: whether to ask the user for permission
+    ///   - requiredPermission: an optionlist of acceptable permissions. If _ANY_ of the requiredPermissions are met, then the access procedes
+    ///   - askIfNecessary: whether to ask the user for permission (requires window to be provided)
     ///   - fromWindow: window to present sheet on
     ///   - persist: whether to persist the permission
     ///   - block: block called with url and bookmark data that you can access.
     ///   Note that the returned url may be a parent of the url you requested
     public func access(fileURL: URL,
-                       askIfNecessary:AskConditions = .ifBookmarkNotStored,
+                       requiredPermission:Permissions = .bookmark,
+                       askIfNecessary:Bool,
                        fromWindow:NSWindow? = nil,
                        persistPermission persist: Bool = true,
-                       with block: @escaping SandboxFileSecurityScopeBlock) {
+                       with block: @escaping SandboxFileAccessBlock) {
         
-        // standardize the file url and remove any symlinks so that the url we lookup in bookmark data would match a url given by the askPermissionForURL method
-        let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         
-        let (allowedURL,bookmarkData) = allowedURLAndBookmarkData(forFileURL:standardisedFileURL)
+        let accessInfo = permissions(forFileURL: fileURL)
         
-        // if url is stored, then we'll get a url and bookmark data. We can exit here.
-        if let storedURL = allowedURL {
-            secureAccess(securityScopedFileURL: storedURL, bookmarkData: bookmarkData, block: block)
+        if accessInfo.permissions.meets(required: requiredPermission){
+            secureAccess(accessInfo: accessInfo, block: block)
             return
         }
         
-        
-        //we don't have a stored permission, so now it depends on our askIfNecessary settings
-        
-        switch askIfNecessary {
-            case .never:
-                //we're not allowed to ask
-                block(nil, nil)
-                return
-        case .ifBookmarkNotStored:
-            break
-        case .ifRequiredForReadonly:
-            if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readonly) {
-                block(fileURL,nil)
-                return
-            }
-        case .ifRequiredForReadWrite:
-            if Powerbox.allowsAccess(forFileURL: fileURL, mode: .readwrite) {
-                block(fileURL,nil)
-                return
-            }
+        if !askIfNecessary {
+            block(.failure(Fail.needToAskPermission(accessInfo)))
+            return
         }
         
         //continuing means we don't have what we want and we're willing to ask
         
         guard let fromWindow = fromWindow else {
             print("ERROR: Unable to ask permission in swiftySandboxFileAccess as no window has been given")
-            block(nil, nil)
+            block(.failure(Fail.noWindowProvided(accessInfo)))
             return
         }
 
+        let standardisedFileURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
         askPermissionWithSheet(for: standardisedFileURL, fromWindow: fromWindow) { (url) in
-            var bookmarkData: Data? = nil
-            // if we have no bookmark data and we want to persist, we need to create it
-            if let url = url, persist == true {
-                bookmarkData = self.persistPermission(url: url)
+            guard let url = url else {
+                block(.failure(Fail.userDidntGrantPermission(accessInfo)))
+                return
+            }
+
+            if persist == true {
+                _ = self.persistPermission(url: url)
             }
             
-            block(url, bookmarkData)
+            //update info with (potentially) new data
+            let accessInfo = self.permissions(forFileURL: fileURL)
+            self.secureAccess(accessInfo: accessInfo, block: block)
         }
 
     }
     
-    private func secureAccess(securityScopedFileURL:URL?, bookmarkData:Data?, block: @escaping SandboxFileSecurityScopeBlock) {
+    /// If we have a bookmark, then do the security access dance around the block
+    /// This is possibly excessive if the user only asked for powerbox access - but shouldn't do any harm
+    /// - Parameters:
+    ///   - accessInfo: info
+    ///   - block: block to run
+    private func secureAccess(accessInfo:AccessInfo, block: @escaping SandboxFileAccessBlock) {
         
-        guard let securityScopedFileURL = securityScopedFileURL else {
-            block(nil,nil)
+        guard let securityScopedFileURL = accessInfo.securityScopedURL else {
+            //we don't have bookmark info - but we do meet the requirements, so just return with success
+            block(.success(accessInfo))
             return
         }
         
         if (securityScopedFileURL.startAccessingSecurityScopedResource() == true) {
-            block(securityScopedFileURL,bookmarkData)
+            block(.success(accessInfo))
             securityScopedFileURL.stopAccessingSecurityScopedResource()
         }
         else {
-            block(nil,nil)
+            //not sure when/why this path happens.
+            print("Unexpectedly failed to startAccessingSecurityScopedResource")
+            block(.failure(Fail.unexpectedlyUnableToAccessBookmark(accessInfo)))
         }
         
     }

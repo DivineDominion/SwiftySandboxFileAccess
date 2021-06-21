@@ -8,14 +8,14 @@
 import Foundation
 
 public enum PowerboxAccessMode {
-    case readonly
-    case readwrite
+    case readOnly
+    case readWrite
     
     var permission:Int32 {
         switch self {
-        case .readonly:
+        case .readOnly:
             return R_OK
-        case .readwrite:
+        case .readWrite:
             return (R_OK | W_OK)
         }
     }
