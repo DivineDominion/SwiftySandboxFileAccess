@@ -3,6 +3,12 @@ SwiftySandboxFileAccess
 
 This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a more swifty API and a handful of additional features.
 
+Try version 3.0 Beta
+====================
+
+This is available in the 3.0 branch. 
+It's available for SPM and is much better!
+
 Details
 ====================
 
