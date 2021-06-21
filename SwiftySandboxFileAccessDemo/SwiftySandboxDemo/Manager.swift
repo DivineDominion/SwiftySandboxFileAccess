@@ -34,8 +34,14 @@ class Manager {
     func pickFile(from window:NSWindow){
         let access = SandboxFileAccess()
         access.access(fileURL: picturesURL,
-                      fromWindow: window) {url,_ in
-            print("access \(String(describing: url)) here")
+                      requiredPermission: .anyReadOnly,
+                      askIfNecessary: true,
+                      fromWindow: window) {result in
+            if case .success(let info) = result {
+                print("access \(self.picturesURL) here")
+                print("note that the url in info could be a parent URL. \(String(describing: info.securityScopedURL))")
+            }
+            
         }
     }
     
@@ -43,18 +49,27 @@ class Manager {
 
         let access = SandboxFileAccess()
         access.access(fileURL: downloadURL,
-                      askIfNecessary: false,
-                      fromWindow: window) {url,_ in
-            print("access \(String(describing: url)) here")
+                      requiredPermission: .powerboxReadOnly,
+                      askIfNecessary: false) {result in
+            if case .success = result {
+                print("access \(String(describing: self.downloadURL)) here")
+            }
         }
     }
     
     func pickFile() {
         let access = SandboxFileAccess()
         access.access(fileURL: picturesURL,
-                      askIfNecessary: true) {url,_ in
-            print("access \(String(describing: url)) here")
-            print("success: \(url != nil)")
+                      askIfNecessary: true) {result in
+            switch result {
+            
+            case .success(_):
+                print("access \(String(describing: self.picturesURL)) here")
+            case .failure(let error):
+                print("access failed \(error)")
+            }
+            
+            
         }
         
     }
@@ -68,8 +83,10 @@ class Manager {
         
         let access = SandboxFileAccess()
         access.access(fileURL: lastOpenedURL,
-                                    askIfNecessary: false)  {url,_ in
-            print("success: \(url != nil)")
+                                    askIfNecessary: false)  {result in
+            if case .success = result {
+                print("success: \(lastOpenedURL)")
+            } 
         }
     }
     

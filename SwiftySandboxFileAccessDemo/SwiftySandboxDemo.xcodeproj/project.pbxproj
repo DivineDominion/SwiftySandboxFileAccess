@@ -7,20 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D415487026790E7400B304A5 /* SandboxFileAccessPersist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */; };
-		D415487126790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */; };
-		D415487226790E7400B304A5 /* SandboxFileAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D415486F26790E7400B304A5 /* SandboxFileAccess.swift */; };
 		D419ADF824850EB6009B580B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF724850EB6009B580B /* AppDelegate.swift */; };
 		D419ADFA24850EB6009B580B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419ADF924850EB6009B580B /* ViewController.swift */; };
 		D419ADFC24850EB7009B580B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFB24850EB7009B580B /* Assets.xcassets */; };
 		D419ADFF24850EB7009B580B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D419ADFD24850EB7009B580B /* Main.storyboard */; };
 		D419AE0824851151009B580B /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D419AE0724851151009B580B /* Manager.swift */; };
+		D43EB6F22680932C00CD3D4D /* AccessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6EC2680932C00CD3D4D /* AccessInfo.swift */; };
+		D43EB6F32680932C00CD3D4D /* SandboxFileAccessPersist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6ED2680932C00CD3D4D /* SandboxFileAccessPersist.swift */; };
+		D43EB6F42680932C00CD3D4D /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6EE2680932C00CD3D4D /* SandboxFileAccessOpenSavePanelDelegate.swift */; };
+		D43EB6F52680932C00CD3D4D /* SandboxFileAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6EF2680932C00CD3D4D /* SandboxFileAccess.swift */; };
+		D43EB6F62680932C00CD3D4D /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6F02680932C00CD3D4D /* Permissions.swift */; };
+		D43EB6F72680932C00CD3D4D /* PowerboxAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43EB6F12680932C00CD3D4D /* PowerboxAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessPersist.swift; sourceTree = "<group>"; };
-		D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessOpenSavePanelDelegate.swift; sourceTree = "<group>"; };
-		D415486F26790E7400B304A5 /* SandboxFileAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccess.swift; sourceTree = "<group>"; };
 		D419ADF424850EB6009B580B /* SwiftySandboxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftySandboxDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D419ADF724850EB6009B580B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D419ADF924850EB6009B580B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -29,6 +29,12 @@
 		D419AE0024850EB7009B580B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D419AE0124850EB7009B580B /* SwiftySandboxDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftySandboxDemo.entitlements; sourceTree = "<group>"; };
 		D419AE0724851151009B580B /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		D43EB6EC2680932C00CD3D4D /* AccessInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessInfo.swift; sourceTree = "<group>"; };
+		D43EB6ED2680932C00CD3D4D /* SandboxFileAccessPersist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessPersist.swift; sourceTree = "<group>"; };
+		D43EB6EE2680932C00CD3D4D /* SandboxFileAccessOpenSavePanelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccessOpenSavePanelDelegate.swift; sourceTree = "<group>"; };
+		D43EB6EF2680932C00CD3D4D /* SandboxFileAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SandboxFileAccess.swift; sourceTree = "<group>"; };
+		D43EB6F02680932C00CD3D4D /* Permissions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		D43EB6F12680932C00CD3D4D /* PowerboxAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerboxAccess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,17 +53,6 @@
 			children = (
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		D415486C26790E7400B304A5 /* SwiftySandboxFileAccess */ = {
-			isa = PBXGroup;
-			children = (
-				D415486D26790E7400B304A5 /* SandboxFileAccessPersist.swift */,
-				D415486E26790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift */,
-				D415486F26790E7400B304A5 /* SandboxFileAccess.swift */,
-			);
-			name = SwiftySandboxFileAccess;
-			path = ../../Sources/SwiftySandboxFileAccess;
 			sourceTree = "<group>";
 		};
 		D419ADEB24850EB6009B580B = {
@@ -80,7 +75,7 @@
 		D419ADF624850EB6009B580B /* SwiftySandboxDemo */ = {
 			isa = PBXGroup;
 			children = (
-				D415486C26790E7400B304A5 /* SwiftySandboxFileAccess */,
+				D43EB6EB2680932C00CD3D4D /* SwiftySandboxFileAccess */,
 				D419AE0724851151009B580B /* Manager.swift */,
 				D419ADF724850EB6009B580B /* AppDelegate.swift */,
 				D419ADF924850EB6009B580B /* ViewController.swift */,
@@ -90,6 +85,20 @@
 				D419AE0124850EB7009B580B /* SwiftySandboxDemo.entitlements */,
 			);
 			path = SwiftySandboxDemo;
+			sourceTree = "<group>";
+		};
+		D43EB6EB2680932C00CD3D4D /* SwiftySandboxFileAccess */ = {
+			isa = PBXGroup;
+			children = (
+				D43EB6EC2680932C00CD3D4D /* AccessInfo.swift */,
+				D43EB6ED2680932C00CD3D4D /* SandboxFileAccessPersist.swift */,
+				D43EB6EE2680932C00CD3D4D /* SandboxFileAccessOpenSavePanelDelegate.swift */,
+				D43EB6EF2680932C00CD3D4D /* SandboxFileAccess.swift */,
+				D43EB6F02680932C00CD3D4D /* Permissions.swift */,
+				D43EB6F12680932C00CD3D4D /* PowerboxAccess.swift */,
+			);
+			name = SwiftySandboxFileAccess;
+			path = ../../Sources/SwiftySandboxFileAccess;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,11 +176,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D415487026790E7400B304A5 /* SandboxFileAccessPersist.swift in Sources */,
-				D415487226790E7400B304A5 /* SandboxFileAccess.swift in Sources */,
+				D43EB6F62680932C00CD3D4D /* Permissions.swift in Sources */,
+				D43EB6F52680932C00CD3D4D /* SandboxFileAccess.swift in Sources */,
+				D43EB6F72680932C00CD3D4D /* PowerboxAccess.swift in Sources */,
 				D419ADFA24850EB6009B580B /* ViewController.swift in Sources */,
+				D43EB6F22680932C00CD3D4D /* AccessInfo.swift in Sources */,
+				D43EB6F42680932C00CD3D4D /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */,
 				D419AE0824851151009B580B /* Manager.swift in Sources */,
-				D415487126790E7400B304A5 /* SandboxFileAccessOpenSavePanelDelegate.swift in Sources */,
+				D43EB6F32680932C00CD3D4D /* SandboxFileAccessPersist.swift in Sources */,
 				D419ADF824850EB6009B580B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
