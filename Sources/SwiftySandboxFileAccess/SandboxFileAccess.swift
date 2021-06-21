@@ -2,7 +2,8 @@ import AppKit
 
 
 
-public typealias SandboxFileAccessBlock = (Result<AccessInfo,Error>) -> Void
+public typealias SandboxResult = Result<AccessInfo,Error>
+public typealias SandboxFileAccessBlock = (SandboxResult) -> Void
 
 
 public protocol SandboxFileAccessProtocol: AnyObject {
@@ -70,7 +71,7 @@ open class SandboxFileAccess {
     /// - Parameter fileURL: A file URL, either a file or folder, that the caller needs access to.
     ///   - acceptablePermission: an optionlist of acceptable permissions. If _ANY_ of the acceptablePermission are met, then the function returns true
     /// - Returns: true if we have permission to access the given file
-    public func canAccess(fileURL:URL, acceptablePermission:Permissions = .anyReadWrite) -> Bool {    
+    public func canAccess(fileURL:URL, acceptablePermission:Permissions = .anyReadWrite) -> Bool {
         let info = accessInfo(forFileURL: fileURL)
         return info.permissions.meets(required: acceptablePermission)
     }
@@ -107,20 +108,22 @@ open class SandboxFileAccess {
     ///   If _ANY_ of the acceptablePermission are met, then the access procedes
     ///   - block: block called with  access info.
     ///   Note that the returned url in accessInfo may be a parent of the url you requested
+    /// - Returns: the access result
     public func synchronouslyAccess(fileURL: URL,
                        acceptablePermission:Permissions = .bookmark,
-                       with block: SandboxFileAccessBlock) {
+                       with block: SandboxFileAccessBlock) -> SandboxResult {
         
         
         let accessInfo = accessInfo(forFileURL: fileURL)
         
         if accessInfo.permissions.meets(required: acceptablePermission){
-            secureAccess(accessInfo: accessInfo, block: block)
+            return secureAccess(accessInfo: accessInfo, block: block)
         }
         else {
-            block(.failure(Fail.needToAskPermission(accessInfo)))
+            let result:SandboxResult = .failure(Fail.needToAskPermission(accessInfo))
+            block(result)
+            return result
         }
-
     }
     
     /// Access a file, requesting permission if needed
@@ -145,7 +148,7 @@ open class SandboxFileAccess {
         let accessInfo = accessInfo(forFileURL: fileURL)
         
         if accessInfo.permissions.meets(required: acceptablePermission){
-            secureAccess(accessInfo: accessInfo, block: block)
+            _ = secureAccess(accessInfo: accessInfo, block: block)
             return
         }
         
@@ -175,7 +178,7 @@ open class SandboxFileAccess {
             
             //update info with (potentially) new data
             let accessInfo = self.accessInfo(forFileURL: fileURL)
-            self.secureAccess(accessInfo: accessInfo, block: block)
+            _ = self.secureAccess(accessInfo: accessInfo, block: block)
         }
 
     }
@@ -185,22 +188,27 @@ open class SandboxFileAccess {
     /// - Parameters:
     ///   - accessInfo: info
     ///   - block: block to run
-    private func secureAccess(accessInfo:AccessInfo, block: SandboxFileAccessBlock) {
+    private func secureAccess(accessInfo:AccessInfo, block: SandboxFileAccessBlock) -> SandboxResult {
         
         guard let securityScopedFileURL = accessInfo.securityScopedURL else {
             //we don't have bookmark info - but we do meet the requirements, so just return with success
-            block(.success(accessInfo))
-            return
+            let result:SandboxResult = .success(accessInfo)
+            block(result)
+            return result
         }
         
         if (securityScopedFileURL.startAccessingSecurityScopedResource() == true) {
-            block(.success(accessInfo))
+            let result:SandboxResult = .success(accessInfo)
+            block(result)
             securityScopedFileURL.stopAccessingSecurityScopedResource()
+            return result
         }
         else {
             //not sure when/why this path happens.
             print("Unexpectedly failed to startAccessingSecurityScopedResource")
-            block(.failure(Fail.unexpectedlyUnableToAccessBookmark(accessInfo)))
+            let result:SandboxResult = .failure(Fail.unexpectedlyUnableToAccessBookmark(accessInfo))
+            block(result)
+            return result
         }
         
     }
