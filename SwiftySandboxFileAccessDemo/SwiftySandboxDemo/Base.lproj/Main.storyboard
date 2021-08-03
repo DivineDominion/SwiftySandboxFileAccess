@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -706,14 +707,14 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="SwiftySandboxDemo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="224"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="220"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="21" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="amJ-qv-jsX">
-                                <rect key="frame" x="20" y="20" width="440" height="184"/>
+                                <rect key="frame" x="20" y="20" width="440" height="180"/>
                                 <subviews>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UcD-ba-WD5">
-                                        <rect key="frame" x="-6" y="156" width="193" height="32"/>
+                                        <rect key="frame" x="-7" y="153" width="187" height="32"/>
                                         <buttonCell key="cell" type="push" title="Clear Stored Permissions" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SvB-4J-KKX">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -722,19 +723,19 @@
                                             <action selector="clearStoredPermissions:" target="XfG-lQ-9wD" id="IQq-2H-BkA"/>
                                         </connections>
                                     </button>
-                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IhX-LL-OCf">
-                                        <rect key="frame" x="-6" y="114" width="91" height="32"/>
-                                        <buttonCell key="cell" type="push" title="Pick File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BkP-mH-CMo">
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PyZ-Eh-p90">
+                                        <rect key="frame" x="-7" y="112" width="302" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Access Downloads (granted in entitlements)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PYe-xj-uId">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="pickFile:" target="XfG-lQ-9wD" id="gcx-Lw-9GU"/>
+                                            <action selector="accessDownloads:" target="XfG-lQ-9wD" id="Nsg-ls-MCv"/>
                                         </connections>
                                     </button>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TDh-ge-cib">
-                                        <rect key="frame" x="-6" y="72" width="144" height="32"/>
-                                        <buttonCell key="cell" type="push" title="Pick File in Sheet" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="t4w-YQ-v1H">
+                                        <rect key="frame" x="-7" y="71" width="152" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Pick File with Sheet" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="t4w-YQ-v1H">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -743,7 +744,7 @@
                                         </connections>
                                     </button>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yeU-OW-sZl">
-                                        <rect key="frame" x="-2" y="42" width="432" height="16"/>
+                                        <rect key="frame" x="-2" y="41" width="432" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="If you drag a file onto the dock icon - access to that path will be stored" id="N9c-TC-hU5">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -751,7 +752,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fKk-UZ-kU9">
-                                        <rect key="frame" x="-6" y="-7" width="286" height="32"/>
+                                        <rect key="frame" x="-7" y="-7" width="280" height="32"/>
                                         <buttonCell key="cell" type="push" title="Check access to last dock-dropped path" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="39u-65-bCZ">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>

@@ -7,7 +7,13 @@
 //
 
 import Foundation
-import SwiftySandboxFileAccess
+import AppKit
+
+class Test {
+    class func isAccessible(fromSandbox path: String?) -> Bool {
+        return access((path as NSString?)?.fileSystemRepresentation, R_OK) == 0
+    }
+}
 
 class Manager {
     static let shared = Manager()
@@ -27,39 +33,73 @@ class Manager {
     
     func pickFile(from window:NSWindow){
         let access = SandboxFileAccess()
-        access.access(fileURL: urlToRequest,
-                      fromWindow: window,
-                      persistPermission: true) {
-                        print("access the URL here")
+        access.access(fileURL: picturesURL,
+                      acceptablePermission: .anyReadOnly,
+                      askIfNecessary: true,
+                      fromWindow: window) {result in
+            if case .success(let info) = result {
+                print("access \(self.picturesURL) here")
+                print("note that the url in info could be a parent URL. \(String(describing: info.securityScopedURL))")
+            }
+            
+        }
+    }
+    
+    func accessDownloads(from window:NSWindow){
+
+        let access = SandboxFileAccess()
+        access.access(fileURL: downloadURL,
+                      acceptablePermission: .powerboxReadOnly,
+                      askIfNecessary: false) {result in
+            if case .success = result {
+                print("access \(String(describing: self.downloadURL)) here")
+            }
         }
     }
     
     func pickFile() {
         let access = SandboxFileAccess()
-        let success = access.access(fileURL: urlToRequest,
-                                    askIfNecessary: true,
-                                    persistPermission: true) {
-                                        print("access the URL here")
+        access.access(fileURL: picturesURL,
+                      askIfNecessary: true) {result in
+            switch result {
+            
+            case .success(_):
+                print("access \(String(describing: self.picturesURL)) here")
+            case .failure(let error):
+                print("access failed \(error)")
+            }
+            
+            
         }
-        print("success: \(success)")
+        
     }
     
     func checkAccessToLastDockDroppedPath() {
-        guard let lastOpenedPath = lastDockDroppedPath else {
+        guard let lastOpenedPath = lastDockDroppedPath  else {
             return
         }
         
-        let access = SandboxFileAccess()
-        let success = access.access(path: lastOpenedPath,
-                                       askIfNecessary: false)
+        let lastOpenedURL = URL(fileURLWithPath: lastOpenedPath)
         
-        print("access status : \(success)")
+        let access = SandboxFileAccess()
+        access.access(fileURL: lastOpenedURL,
+                                    askIfNecessary: false)  {result in
+            if case .success = result {
+                print("success: \(lastOpenedURL)")
+            } 
+        }
     }
     
     //MARK: Utilities
     
-    let urlToRequest:URL = {
+    
+    
+    let picturesURL:URL = {
         return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures")
+    }()
+    
+    let downloadURL:URL = {
+        return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Downloads")
     }()
     
     

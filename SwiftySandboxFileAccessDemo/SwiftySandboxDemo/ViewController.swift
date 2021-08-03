@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import SwiftySandboxFileAccess
 
 class ViewController: NSViewController {
 
@@ -28,9 +27,10 @@ class ViewController: NSViewController {
     }
     
     
-    @IBAction func pickFile(_ sender: Any) {
-        Manager.shared.pickFile()
+    @IBAction func accessDownloads(_ sender: Any) {
+        Manager.shared.accessDownloads(from:self.view.window!)
     }
+    
     
     @IBAction func pickFileInSheet(_ sender: Any) {
         Manager.shared.pickFile(from:self.view.window!)
