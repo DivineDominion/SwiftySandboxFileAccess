@@ -3,11 +3,12 @@ SwiftySandboxFileAccess
 
 This is a swift version of the original [AppSandboxFileAccess](https://github.com/leighmcculloch/AppSandboxFileAccess) with a simpler more swifty API and a handful of additional features.
 
-Try version 3.0 Beta
+Version 3.0 Released
 ====================
 
-This is available in the 3.0 branch. 
-It's available for SPM and is much better!
+Version 3.0 is available with SPM.
+It has a new cleaner API, and integrates with the powerbox.
+This allows it to work with 'Do I have access to this file' rather than 'Do I have a bookmark which gives me access to this file'?
 
 Details
 ====================
