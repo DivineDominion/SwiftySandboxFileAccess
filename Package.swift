@@ -12,6 +12,7 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftySandboxFileAccess",
-            dependencies: [])
+            dependencies: [],
+            resources: [.process("Resources/PrivacyInfo.xcprivacy")])
     ]
 )
